@@ -40,4 +40,4 @@ The application workspace file is `calibration-workspace.json` under Electron's 
 
 An unreadable or unsupported workspace is preserved and automatic writes are blocked. The explicit Reset operation asks for confirmation, saves a recovery copy beside the workspace and then restores the bundled catalogue. A canceled reset leaves the original file intact. Tests cover both malformed JSON and unknown format versions using temporary directories.
 
-Native UI steps for the full editor are documented when its controls land; the service and storage rules above are already covered by isolated tests.
+See the [overlay guide](calibration-overlay.md) for editor controls, when to keep the app open and when to close it for a persistence check. Service, storage and gesture behavior is covered by isolated tests; native Windows acceptance is tracked separately in the change tasks and progress journal.

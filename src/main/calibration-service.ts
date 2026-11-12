@@ -49,6 +49,7 @@ export class CalibrationService {
     const template = this.template();
     const saved = this.findProfile(template, display);
     this.state = {
+      revision: 0,
       profile: saved ?? createCalibrationProfile(template, display),
       page: workspace.preferences.page,
       visible: false,
@@ -69,6 +70,11 @@ export class CalibrationService {
 
   getState(): DesktopState {
     return structuredClone(this.state);
+  }
+
+  private notify(): void {
+    this.state.revision++;
+    this.onChange();
   }
 
   private template(): LayoutTemplate {
@@ -119,14 +125,14 @@ export class CalibrationService {
     this.platform.setBounds(display);
     this.setMode("editing");
     if (!this.state.recoveryRequired) this.state.error = undefined;
-    this.onChange();
+    this.notify();
   }
 
   cancel(): void {
     this.idle();
     if (this.state.mode === "editing") this.state.profile = structuredClone(this.previousProfile);
     this.setMode("hidden");
-    this.onChange();
+    this.notify();
   }
 
   hide(): void {
@@ -141,20 +147,20 @@ export class CalibrationService {
     this.selectedDisplay();
     this.selectPage(page);
     this.setMode("preview");
-    this.onChange();
+    this.notify();
   }
 
   selectPage(page: PageId): void {
     this.idle();
     this.state.page = page;
-    this.onChange();
+    this.notify();
   }
 
   setVisibility(inventory: boolean, stash: boolean): void {
     this.idle();
     this.state.inventoryVisible = inventory;
     this.state.stashVisible = stash;
-    this.onChange();
+    this.notify();
   }
 
   updateProfile(input: unknown): void {
@@ -164,7 +170,7 @@ export class CalibrationService {
     if (displayKey(profile.display) !== displayKey(this.selectedDisplay()))
       throw new Error("Calibration display does not match the selected display");
     this.state.profile = profile;
-    this.onChange();
+    this.notify();
   }
 
   private preferences(): CalibrationWorkspace["preferences"] {
@@ -180,7 +186,7 @@ export class CalibrationService {
   private async transaction(action: () => Promise<void>): Promise<void> {
     this.idle();
     this.state.busy = true;
-    this.onChange();
+    this.notify();
     try {
       await action();
     } catch (error) {
@@ -188,7 +194,7 @@ export class CalibrationService {
       throw error;
     } finally {
       this.state.busy = false;
-      this.onChange();
+      this.notify();
     }
   }
 
@@ -227,7 +233,7 @@ export class CalibrationService {
     this.state.selectedDisplayId = id;
     this.useProfile(this.template(), display);
     this.platform.setBounds(display);
-    this.onChange();
+    this.notify();
   }
 
   private useProfile(template: LayoutTemplate, display: DisplaySnapshot): void {
@@ -277,13 +283,13 @@ export class CalibrationService {
       this.state.requiresCalibration = true;
       this.state.error = "Display settings changed. Select a display and recalibrate.";
     }
-    this.onChange();
+    this.notify();
   }
 
   rendererStopped(): void {
     this.setMode("hidden");
     this.state.error = "Overlay renderer stopped. Restart the application to try again.";
-    this.onChange();
+    this.notify();
   }
 
   async chooseImport(): Promise<void> {
@@ -319,7 +325,7 @@ export class CalibrationService {
   cancelImport(): void {
     this.idle();
     this.state.pendingImport = undefined;
-    this.onChange();
+    this.notify();
   }
 
   async reset(): Promise<void> {

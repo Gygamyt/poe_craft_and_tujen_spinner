@@ -139,8 +139,12 @@ export function parseCalibrationProfile(
         bounds: {
           x: slot.bounds.x * actual.area.width,
           y: slot.bounds.y * actual.area.height,
-          width: slot.bounds.width * actual.area.width,
-          height: slot.bounds.height * actual.area.height,
+          width:
+            (slot.bounds.x + slot.bounds.width) * actual.area.width -
+            slot.bounds.x * actual.area.width,
+          height:
+            (slot.bounds.y + slot.bounds.height) * actual.area.height -
+            slot.bounds.y * actual.area.height,
         },
       })),
     });

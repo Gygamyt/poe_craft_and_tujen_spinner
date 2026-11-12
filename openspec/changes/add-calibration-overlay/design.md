@@ -82,6 +82,8 @@ Manual Windows acceptance is required in dev and build/start: inventory plus Gen
 
 ### 6. Архитектурные записи
 
+Renderer synchronization: runtime snapshots carry a monotonic revision, and both views reject older asynchronous read replies after newer broadcasts. Saving flushes pending gestures and explicitly submits the visible profile before persistence. Page selection is captured before awaiting queued updates. Regression tests cover reordered snapshots after Save and preservation of the final displayed geometry.
+
 При реализации добавить `docs/architecture/0002-calibration-overlay.md`: обосновать отдельное прозрачное окно, режимы ввода, границы IPC, локальные DIP-координаты, разделение шаблона/калибровки и идентичность слота без зависимости от подписи. В рамках текущего propose записываются только плановые артефакты.
 
 ## Risks / Trade-offs

@@ -33,6 +33,10 @@ Geometry and profile validation run in Node tests without Electron or PoE. A new
 
 ## Persistence and import boundary
 
+The editor applies pure gestures from a pointer-down snapshot, using the inverse SVG screen transform to convert client coordinates into local SVG/DIP coordinates. It sends a profile at gesture completion rather than flooding IPC on every pointer move. The pending update promise is flushed before Save/Cancel, so a final drag cannot arrive after the save. An in-flight authoritative update does not overwrite a newer local drag. Slot moves preserve adjacent slots and page identity; frame resizing leaves normalized slot geometry unchanged.
+
+Every service snapshot has a monotonically increasing runtime revision. Both renderer views discard older replies, including delayed `getState` results arriving after newer broadcasts. Save waits for pending gestures and explicitly submits the currently visible profile before writing. Page selection captures the selected value before awaiting pending work. These rules address the reported return to an older visual layout after Save; regression tests reorder snapshots and verify the saved geometry.
+
 `CalibrationService` owns workspace state, the editable draft and mode transitions; `WorkspaceStore` owns serialized file writes. The application stores `calibration-workspace.json` under Electron's `userData`. Tests use temporary directories and synthetic adapters, never the real user profile. A profile is added/replaced only after explicit Save; cancel restores the previous in-memory profile. A failed write leaves both the old file and the draft intact for retry.
 
 The store validates a fresh temporary file before replacing the destination. Malformed JSON, unsupported format versions and invalid references block automatic writes. Reset requires a native confirmation and creates a uniquely named recovery copy before replacing existing data. Concurrent operations are serialized, and display compatibility is rechecked after pending writes to avoid showing stale geometry.

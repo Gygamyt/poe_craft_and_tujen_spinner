@@ -25,6 +25,7 @@ export const desktopChannels = {
 } as const;
 
 export interface DesktopState {
+  revision: number;
   profile: CalibrationProfile;
   page: PageId;
   visible: boolean;
