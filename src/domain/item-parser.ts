@@ -9,8 +9,7 @@ export const itemSchema = z.object({
 export type Item = z.infer<typeof itemSchema>;
 
 export type ItemParseResult =
-  | { ok: true; item: Item }
-  | { ok: false; reason: "empty-text" | "unsupported-format" };
+  { ok: true; item: Item } | { ok: false; reason: "empty-text" | "unsupported-format" };
 
 export interface ItemParser {
   parse(text: string): ItemParseResult;

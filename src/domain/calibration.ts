@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const rectangleSchema = z.object({
+export const rectangleSchema = z.object({
   x: z.number().nonnegative(),
   y: z.number().nonnegative(),
   width: z.number().positive(),

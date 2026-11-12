@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "layoutId": "example",
+  "geometryVersion": "1",
+  "leagueLabel": "Example only",
+  "inventory": { "columns": 12, "rows": 5 },
+  "pages": {
+    "general": {
+      "slots": [{ "id": "slot-001", "bounds": { "x": 0.1, "y": 0.1, "width": 0.1, "height": 0.1 } }]
+    },
+    "atlas": {
+      "slots": [{ "id": "slot-001", "bounds": { "x": 0.2, "y": 0.1, "width": 0.1, "height": 0.1 } }]
+    },
+    "league": {
+      "slots": [{ "id": "slot-001", "bounds": { "x": 0.3, "y": 0.1, "width": 0.1, "height": 0.1 } }]
+    }
+  }
+}
