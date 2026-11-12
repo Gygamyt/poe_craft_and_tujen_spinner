@@ -80,7 +80,7 @@ Preload предоставляет только предметные опера�
 
 Модели, преобразования, переключение состояний, IPC-отказы, импорт и хранение проверяются Vitest с синтетическими данными и подменёнными Electron-адаптерами. Референсы используются для визуальной сверки состава и расположения шаблонов, а не как источник распознанных названий валют.
 
-Manual Windows acceptance is required in dev and build/start: inventory plus General/Atlas/League, frame/slot manipulation, enabled flags, cancel, save/restart, preview input pass-through, hide/return and both-window shutdown. Repeat over borderless windowed PoE and with the game closed. Manually verify 100% and 150% Windows scaling; an unavailable required check stays open with a recorded limitation. Test a second monitor when hardware is available, otherwise record that limitation; isolated tests cover signed display origins.
+Native Windows acceptance was confirmed in dev and build/start at 3440 × 1440 / 125% for the implemented workflow. By explicit user decision, remaining physical 100%/150% acceptance and conditional additional-monitor checks are tracked in `docs/progress/technical-debt.md` as TD-001 rather than blocking this change's tracked implementation tasks. They remain unperformed; functional DPI requirements are unchanged and broader native compatibility is not claimed as verified. Isolated tests cover display snapshots, signed origins and scale changes.
 
 ### 6. Архитектурные записи
 

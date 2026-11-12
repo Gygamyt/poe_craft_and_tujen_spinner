@@ -28,6 +28,8 @@
 
 ## Impact
 
+Acceptance follow-up: the user explicitly moved physical 100%/150% DPI verification to TD-001 in `docs/progress/technical-debt.md`. Native acceptance is confirmed at 3440 × 1440 / 125%; automated coverage is broader. This is deferred verification, not evidence that the outstanding checks passed.
+
 После согласования затрагиваются `src/domain/`, Electron main/preload, Vue renderer и тесты. Добавляются каталог JSON-шаблонов, ограниченный типизированный IPC и хранение под `app.getPath("userData")`. Архитектурные решения будут записаны в `docs/architecture/`, результаты — в журнале прогресса.
 
 Визуальные источники: `docs/reference/Char.jpg`, `First currency.jpg`, `Second currency.jpg`, `Third currency.jpg`. Это обрезанные примеры расположения, а не готовая калибровка рабочего стола или подтверждённый каталог валют текущей лиги.

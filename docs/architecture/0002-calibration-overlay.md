@@ -27,7 +27,7 @@ The compact panel starts near the selected display's top centre and is clamped t
 
 Both interaction modes use `buildCalibrationScene` and shared CSS for geometry, colours, fills and labels. Editing alone adds disabled slots, selection outlines and resize handles. This addresses the perception that Save changes the layout when it only changes the interaction mode.
 
-Display snapshots use bounds, scale factor and rotation. A display disappearing or changing those settings hides the overlay, preserves previous geometry and requires recalibration. Isolated tests cover DPI changes, signed origins, rotation, invalid requests and cleanup. Physical 100%/150% acceptance remains open until performed. Selecting a new geometry version also hides the previous calibration and restores a profile only if both layout version and display snapshot match.
+Display snapshots use bounds, scale factor and rotation. A display disappearing or changing those settings hides the overlay, preserves previous geometry and requires recalibration. Isolated tests cover DPI changes, signed origins, rotation, invalid requests and cleanup. Physical 100%/150% acceptance is open as [TD-001](../progress/technical-debt.md), deferred by user decision. Selecting a new geometry version also hides the previous calibration and restores a profile only if both layout version and display snapshot match.
 
 The user confirmed the early dev overlay and build/start visibility over borderless windowed PoE and with PoE closed on a 3440 × 1440 display, including hide. The supported game mode is borderless windowed only; ordinary windowed mode is outside the acceptance scope. Automated geometry coverage spans six resolutions and four scales, without claiming native acceptance for all hardware.
 

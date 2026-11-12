@@ -13,7 +13,6 @@
 
 - [x] 2.1 Separate main/overlay renderer views and add an isolated transparent window covering the selected display. Verify test-overlay visibility on Windows in dev and build/start over borderless windowed PoE and with the game closed; record actual display settings and results before developing the full editor.
 - [x] 2.2 Реализовать состояния hidden/editing/preview, отказ от фокуса и пропуск мыши в preview, скрытие при ошибке renderer и закрытие оверлея вместе с основным окном. Проверить переходы Vitest с Electron-адаптером и вручную: мышь/клавиатура доступны игре в preview, hidden не мешает вводу, возврат через основное окно возможен, оба окна закрываются.
-- [ ] 2.3 Добавить выбор дисплея и инвалидирование разметки при изменении bounds/scaleFactor/rotation, отключении дисплея и смене геометрической версии. Проверить Vitest со снимками дисплеев и вручную смену масштаба 100% ↔ 150%: старая разметка скрыта и предлагается новая калибровка; расширить ADR режимами окна и DPI.
 
 ## 3. Хранение, импорт и доверенная граница
 
@@ -36,8 +35,12 @@
 ## 5. Итоговая интеграционная приёмка
 
 - [x] 5.1 Выполнить npm ci, typecheck, lint, format:check, npm test, build, git diff --check и openspec validate add-calibration-overlay --strict. Сверить успешные результаты со сценариями обеих спецификаций в журнале, сохранив существующие контрактные тесты и указав ограничения sandbox.
-- [ ] 5.2 Verify the complete Windows workflow in dev and build/start with Vite stopped: Inventory + General/Atlas/League, alignment, individual slot, enabled, Escape, save/restart, matching preview appearance, compact-panel Hide and all-window shutdown. Repeat over borderless windowed PoE and with the game closed, at 100% and 150% Windows scale; record user confirmation and actual settings. Document unavailable second-monitor hardware as a limitation rather than claiming it was tested.
 - [x] 5.3 Проверить интеграционно обновление только названий, импорт новой геометрической версии, возврат к старой версии и обработку повреждённого сохранения. Убедиться в сохранности прежних данных и отсутствии игровых действий, сверить ADR/руководство/журнал с реализацией; закрыть задачу только после прохождения сценариев.
+
+## Deferred verification (technical debt)
+
+- Former task 2.3: display-selection/invalidation implementation and adapter tests are complete; physical 100%/150% Windows-scale verification is open under [TD-001](../../../docs/progress/technical-debt.md).
+- Former task 5.2: native acceptance at 3440 × 1440 / 125% is confirmed; the remaining 100%/150% matrix and conditional additional-monitor checks are open under TD-001. Moved out of tracked implementation tasks by explicit user request, not marked as executed.
 
 ## Workflow follow-up
 
