@@ -36,6 +36,7 @@ async function createWindow(): Promise<void> {
   const desktop = createCalibrationDesktop(window, { workspace, storage, loadError });
   window.on("closed", () => desktop.dispose());
   await loadView(desktop.overlay, "overlay");
+  await loadView(desktop.previewControls, "preview-controls");
   await loadView(window, "main");
   window.show();
   window.focus();
@@ -47,7 +48,10 @@ async function createWindow(): Promise<void> {
   }
 }
 
-async function loadView(window: BrowserWindow, view: "main" | "overlay"): Promise<void> {
+async function loadView(
+  window: BrowserWindow,
+  view: "main" | "overlay" | "preview-controls",
+): Promise<void> {
   window.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
   window.webContents.on("will-navigate", (event) => event.preventDefault());
   window.webContents.on("preload-error", (_event, _path, error) => {

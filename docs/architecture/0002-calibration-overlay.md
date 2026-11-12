@@ -19,9 +19,13 @@ This avoids hardcoded UI pixels and prevents a future label change from breaking
 
 ## Desktop window and input modes
 
-The desktop uses a separate transparent, nonresizable BrowserWindow and an ordinary control window. SVG content is resized inside the overlay rather than resizing the transparent native window. Both windows retain context isolation, sandbox and disabled Node integration. The control window is explicitly shown and focused after loading: the first implicit-show probe was not visible to the user.
+The desktop uses three isolated windows: a transparent nonresizable canvas, ordinary controls and a compact preview-control panel. SVG content is resized inside the canvas rather than resizing the transparent native window. All windows retain context isolation, sandbox and disabled Node integration. The control window is explicitly shown and focused after loading: the first implicit-show probe was not visible to the user.
 
-Main owns hidden/editing/preview transitions. Editing enables native focus and pointer input. Preview releases focus, disables focusability and ignores mouse events before showing without activation. Hidden mode also releases input. Escape in the focused editor cancels the draft; the ordinary window remains the route back from click-through preview. Closing that window disposes the overlay, IPC handlers and display listeners.
+Main owns hidden/editing/preview transitions. Editing enables canvas focus and pointer input. Preview releases canvas focus, disables focusability and ignores mouse events before showing without activation. It also shows the compact panel above the canvas, without activation or keyboard focus. Only the panel's small bounds accept clicks. Hide disposes neither window: it hides both preview windows and focuses ordinary controls. Editing/hidden states hide the compact panel. Closing main disposes all three windows, IPC handlers and display listeners. Alt+Tab remains an alternative route back; global shortcuts are not registered.
+
+The compact panel starts near the selected display's top centre and is clamped to its bounds in DIP. Its renderer is allowed to read state and invoke Hide only; it cannot edit, import or reset. A preview-control renderer failure hides preview and returns to the main controls instead of leaving an unusable exit panel.
+
+Both interaction modes use `buildCalibrationScene` and shared CSS for geometry, colours, fills and labels. Editing alone adds disabled slots, selection outlines and resize handles. This addresses the perception that Save changes the layout when it only changes the interaction mode.
 
 Display snapshots use bounds, scale factor and rotation. A display disappearing or changing those settings hides the overlay, preserves previous geometry and requires recalibration. Isolated tests cover DPI changes, signed origins, rotation, invalid requests and cleanup. Physical 100%/150% acceptance remains open until performed. Selecting a new geometry version also hides the previous calibration and restores a profile only if both layout version and display snapshot match.
 

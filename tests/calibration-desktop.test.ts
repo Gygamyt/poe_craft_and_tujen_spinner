@@ -20,6 +20,7 @@ const electron = vi.hoisted(() => {
     setIgnoreMouseEvents = vi.fn();
     setFocusable = vi.fn();
     showInactive = vi.fn();
+    moveTop = vi.fn();
     show = vi.fn();
     focus = vi.fn();
     blur = vi.fn();
@@ -90,6 +91,7 @@ describe("native overlay boundary", () => {
       event,
       call,
       overlay: desktop.overlay as unknown as InstanceType<typeof electron.WindowMock>,
+      controls: desktop.previewControls as unknown as InstanceType<typeof electron.WindowMock>,
     };
   }
 
@@ -175,7 +177,67 @@ describe("native overlay boundary", () => {
     const { desktop } = fixture();
     desktop.dispose();
     expect(desktop.overlay.isDestroyed()).toBe(true);
+    expect(desktop.previewControls.isDestroyed()).toBe(true);
     expect(electron.handlers.size).toBe(0);
     expect(electron.screen.removeListener).toHaveBeenCalledTimes(3);
+  });
+
+  it("shows a compact nonactivating panel only during preview", async () => {
+    const { overlay, controls, call } = fixture();
+    expect(controls.options).toMatchObject({
+      width: 280,
+      height: 68,
+      focusable: false,
+      alwaysOnTop: true,
+      skipTaskbar: true,
+      webPreferences: { contextIsolation: true, sandbox: true, nodeIntegration: false },
+    });
+    await call(desktopChannels.preview, "general");
+    expect(controls.showInactive).toHaveBeenCalledOnce();
+    expect(controls.moveTop).toHaveBeenCalledOnce();
+    expect(controls.showInactive.mock.invocationCallOrder[0]).toBeGreaterThan(
+      overlay.showInactive.mock.invocationCallOrder[0],
+    );
+    await call(desktopChannels.edit);
+    expect(controls.hide).toHaveBeenCalled();
+    expect(controls.focus).not.toHaveBeenCalled();
+  });
+
+  it("allows the preview panel to hide and return to main, but rejects editing and file operations", async () => {
+    const { main, controls, overlay, call } = fixture();
+    const sender = { sender: controls.webContents, senderFrame: controls.webContents.mainFrame };
+    expect(call(desktopChannels.state, undefined, sender)).toMatchObject({ mode: "hidden" });
+    for (const channel of [
+      desktopChannels.edit,
+      desktopChannels.update,
+      desktopChannels.save,
+      desktopChannels.chooseImport,
+      desktopChannels.reset,
+      desktopChannels.page,
+    ]) {
+      expect(await call(channel, undefined, sender)).toMatchObject({
+        ok: false,
+        error: { code: "invalid-request" },
+      });
+    }
+    await call(desktopChannels.preview, "general");
+    const before = call(desktopChannels.state) as { profile: unknown };
+    expect(await call(desktopChannels.hide, undefined, sender)).toEqual({ ok: true });
+    expect(call(desktopChannels.state)).toMatchObject({ mode: "hidden", profile: before.profile });
+    expect(overlay.hide).toHaveBeenCalled();
+    expect(controls.hide).toHaveBeenCalled();
+    expect(main.show).toHaveBeenCalledOnce();
+    expect(main.focus).toHaveBeenCalledOnce();
+  });
+
+  it("hides preview controls on display incompatibility or panel renderer failure", async () => {
+    const { main, controls, call } = fixture();
+    await call(desktopChannels.preview, "general");
+    electron.screen.getAllDisplays.mockReturnValue([]);
+    electron.screen.on.mock.calls.find(([event]) => event === "display-removed")![1]();
+    expect(controls.hide).toHaveBeenCalled();
+    controls.webContents.on.mock.calls.find(([event]) => event === "render-process-gone")![1]();
+    expect(call(desktopChannels.state)).toMatchObject({ mode: "hidden" });
+    expect(main.focus).toHaveBeenCalled();
   });
 });

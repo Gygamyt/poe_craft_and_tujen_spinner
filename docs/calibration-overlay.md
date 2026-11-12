@@ -10,9 +10,9 @@ Use PoE in **borderless windowed** mode. Exclusive fullscreen is unsupported. Th
 4. Click **Редактировать**. The overlay receives mouse input while you calibrate. Drag a frame by its background or title; drag the white corner handles to resize it. The inventory always has 12 columns and 5 rows.
 5. Click a stash slot to select it, then drag it or use its corner handles. The overlay toolbar shows its neutral ID/name and an enable/disable button. Disabled slots remain faintly visible in editing; they are omitted in preview.
 6. Use the overlay toolbar to switch between all three stash pages. Each page keeps its own frame and slots. The large central item area is not a currency slot.
-7. Click **Сохранить** in the overlay toolbar. After a successful write the application enters click-through preview. Activate the game yourself; mouse and keyboard input then belong to it.
-8. Keep the app open to use the overlay. Use Alt+Tab to return to the panel; **Скрыть** hides the overlay. **Редактировать** starts a new draft. Escape or **Отмена** discards that draft and hides the overlay.
-9. To check persistence, close the **control panel** after saving, then start the application again. Closing that panel also closes the overlay. The same layout/display calibration is restored; **Просмотр** shows it without another alignment.
+7. Click **Сохранить** in the overlay toolbar. After a successful write the application enters click-through preview. Enabled cells keep the same positions, colours, fills and labels; editing handles disappear and disabled slots are omitted. Activate the game yourself; canvas mouse and keyboard input then belong to it.
+8. Keep the app open to use the overlay. A small **Просмотр** panel appears near the top centre of the selected monitor. Click its **Скрыть** button to hide the markup and return to the ordinary controls. Only this small panel receives clicks; the rest of the canvas passes them through. Alt+Tab remains an alternative. **Редактировать** starts a new draft; Escape or **Отмена** discards it and hides the overlay.
+9. To check persistence, close the **main control panel** after saving, then start the application again. Closing that panel also closes the canvas and compact preview panel. The same layout/display calibration is restored; **Просмотр** shows it without another alignment.
 
 If Save fails, the editor retains its draft and the old file remains intact. Retry Save or cancel the draft. Do not assume the draft was saved merely because its position changed on screen.
 

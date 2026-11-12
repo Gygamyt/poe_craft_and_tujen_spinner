@@ -30,10 +30,13 @@
 - [ ] 4.4 Connect save/cancel to persistence and restoration, preserving the draft for retry after write failure. Verify save/cancel/error integration tests, reordered snapshot replies after Save, and explicit submission of the visible geometry. Manually verify restart preserves coordinates/enabled flags; adding only defaultLabel must not reset calibration.
 - [ ] 4.5 Обновить руководство настройкой инвентаря и трёх страниц, возвращением из preview, работой с лишними слотами и ограничениями режимов игры. Проверить инструкцию ручным прохождением; явно указать отсутствие автоопределения вкладок, слежения за игрой и заполненного каталога валют.
 
+- [x] 4.6 Keep frames, enabled-slot labels and styling consistent across editing/preview using a shared scene model. Verify mode parity and disabled-slot filtering with Vitest, and manually confirm Save changes only editing affordances; update the guide and architecture record.
+- [ ] 4.7 Add an isolated compact preview panel on the selected display with a Hide button returning to main controls. Verify mode visibility, pointer/focus boundaries, sender permissions, display changes and all-window disposal with native-adapter tests and manual dev/build checks; update usage documentation.
+
 ## 5. Итоговая интеграционная приёмка
 
 - [x] 5.1 Выполнить npm ci, typecheck, lint, format:check, npm test, build, git diff --check и openspec validate add-calibration-overlay --strict. Сверить успешные результаты со сценариями обеих спецификаций в журнале, сохранив существующие контрактные тесты и указав ограничения sandbox.
-- [ ] 5.2 Verify the complete Windows workflow in dev and build/start with Vite stopped: Inventory + General/Atlas/League, alignment, individual slot, enabled, Escape, save/restart, preview and shutdown. Repeat over borderless windowed PoE and with the game closed, at 100% and 150% Windows scale; record user confirmation and actual settings. Document unavailable second-monitor hardware as a limitation rather than claiming it was tested.
+- [ ] 5.2 Verify the complete Windows workflow in dev and build/start with Vite stopped: Inventory + General/Atlas/League, alignment, individual slot, enabled, Escape, save/restart, matching preview appearance, compact-panel Hide and all-window shutdown. Repeat over borderless windowed PoE and with the game closed, at 100% and 150% Windows scale; record user confirmation and actual settings. Document unavailable second-monitor hardware as a limitation rather than claiming it was tested.
 - [x] 5.3 Проверить интеграционно обновление только названий, импорт новой геометрической версии, возврат к старой версии и обработку повреждённого сохранения. Убедиться в сохранности прежних данных и отсутствии игровых действий, сверить ADR/руководство/журнал с реализацией; закрыть задачу только после прохождения сценариев.
 
 ## Workflow follow-up

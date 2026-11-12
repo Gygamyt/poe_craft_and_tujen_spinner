@@ -7,14 +7,9 @@ import {
   type GeometryHandle,
   type GeometryTarget,
 } from "../../domain/calibration-editor";
-import { inventoryCells, materializeSlot, type Point } from "../../domain/calibration-geometry";
-import {
-  pageIds,
-  slotLabel,
-  type CalibrationProfile,
-  type PageId,
-} from "../../domain/calibration-layout";
-import { layoutKey } from "../../domain/calibration-workspace";
+import type { Point } from "../../domain/calibration-geometry";
+import { pageIds, type CalibrationProfile, type PageId } from "../../domain/calibration-layout";
+import { buildCalibrationScene } from "../../domain/calibration-scene";
 import type { DesktopState } from "../../domain/desktop-api";
 import { acceptDesktopSnapshot, saveEditedProfile } from "../../domain/calibration-snapshot";
 defineOptions({ name: "CalibrationOverlay" });
@@ -39,23 +34,9 @@ let pendingUpdates = 0;
 let pendingUpdate: Promise<void> = Promise.resolve();
 const clone = <T,>(value: T): T => JSON.parse(JSON.stringify(value));
 const editing = computed(() => state.value?.mode === "editing");
-const template = computed(() =>
-  state.value?.templates.find((item) => layoutKey(item) === state.value?.activeLayoutKey),
-);
-const cells = computed(() => (state.value ? inventoryCells(state.value.profile.inventory) : []));
-const slots = computed(() => {
-  if (!state.value) return [];
-  const page = state.value.profile.pages[state.value.page];
-  return page.slots
-    .filter((slot) => editing.value || slot.enabled)
-    .map((slot) => ({
-      ...slot,
-      rectangle: materializeSlot(page.area, slot.bounds),
-      label: slotLabel(
-        template.value?.pages[state.value!.page].slots.find((item) => item.id === slot.id) ?? slot,
-      ),
-    }));
-});
+const scene = computed(() => (state.value ? buildCalibrationScene(state.value) : undefined));
+const cells = computed(() => scene.value?.inventory ?? []);
+const slots = computed(() => scene.value?.slots ?? []);
 const selection = computed(() => {
   if (!state.value || !editing.value) return undefined;
   if (selected.value.kind === "inventory" && !state.value.inventoryVisible) return undefined;
@@ -254,9 +235,9 @@ onUnmounted(() => {
     >
       <g v-if="state.inventoryVisible" class="inventory">
         <rect
-          v-if="editing"
           v-bind="state.profile.inventory"
-          class="drag-frame"
+          class="surface-frame"
+          :class="{ 'drag-frame': editing }"
           @pointerdown="start($event, { kind: 'inventory' })"
         />
         <g class="grid-cells"><rect v-for="(cell, index) in cells" :key="index" v-bind="cell" /></g>
@@ -270,21 +251,21 @@ onUnmounted(() => {
       </g>
       <g v-if="state.stashVisible" class="stash">
         <rect
-          v-if="editing"
           v-bind="state.profile.pages[state.page].area"
-          class="drag-frame"
+          class="surface-frame"
+          :class="{ 'drag-frame': editing }"
           @pointerdown="start($event, { kind: 'page', page: state.page })"
         />
         <g v-for="slot in slots" :key="slot.id" :class="{ disabled: !slot.enabled }">
           <rect
             v-bind="slot.rectangle"
+            class="slot-shape"
             :class="{ 'editable-slot': editing }"
             @pointerdown="start($event, { kind: 'slot', page: state.page, slotId: slot.id })"
           >
             <title>{{ slot.label }} · {{ slot.id }}</title>
           </rect>
           <text
-            v-if="editing"
             :x="slot.rectangle.x + 3"
             :y="slot.rectangle.y + slot.rectangle.height / 2 + 4"
             class="slot-label"
@@ -381,13 +362,15 @@ onUnmounted(() => {
 .calibration-overlay .selection-outline {
   pointer-events: none;
 }
-.calibration-overlay .drag-frame {
+.calibration-overlay .surface-frame {
   fill: #ffffff06;
   stroke-dasharray: 6 4;
-  cursor: move;
 }
-.calibration-overlay .editable-slot {
+.calibration-overlay .slot-shape {
   fill: #ffd05c14;
+}
+.calibration-overlay .drag-frame,
+.calibration-overlay .editable-slot {
   cursor: move;
 }
 .calibration-overlay .disabled {

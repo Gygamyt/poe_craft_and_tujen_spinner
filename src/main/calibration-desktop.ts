@@ -7,6 +7,7 @@ import { displayKey, type CalibrationWorkspace } from "../domain/calibration-wor
 import { desktopChannels, type DesktopResult } from "../domain/desktop-api";
 import { applyOverlayMode } from "./overlay-mode";
 import { CalibrationService, type CalibrationStorage } from "./calibration-service";
+import { previewControlBounds } from "./preview-controls";
 
 function snapshot(display: Electron.Display): DisplaySnapshot {
   return {
@@ -37,7 +38,7 @@ export function createCalibrationDesktop(
     storage: CalibrationStorage;
     loadError?: string;
   },
-): { overlay: BrowserWindow; dispose: () => void } {
+): { overlay: BrowserWindow; previewControls: BrowserWindow; dispose: () => void } {
   const displays = screen.getAllDisplays().map(snapshot);
   const display =
     displays.find((item) => item.id === options.workspace.preferences.displayId) ?? displays[0];
@@ -58,6 +59,23 @@ export function createCalibrationDesktop(
   });
   overlay.setMenu(null);
   overlay.setIgnoreMouseEvents(true);
+  const previewControls = new BrowserWindow({
+    ...previewControlBounds(display),
+    title: "PoE Autocraft Preview Controls",
+    show: false,
+    frame: false,
+    resizable: false,
+    minimizable: false,
+    maximizable: false,
+    fullscreenable: false,
+    useContentSize: true,
+    focusable: false,
+    alwaysOnTop: true,
+    skipTaskbar: true,
+    backgroundColor: "#171411",
+    webPreferences: desktopPreferences(),
+  });
+  previewControls.setMenu(null);
   const service = new CalibrationService(
     options.workspace,
     displays,
@@ -66,9 +84,16 @@ export function createCalibrationDesktop(
       setMode(mode) {
         if (overlay.isDestroyed()) throw new Error("Overlay is unavailable");
         applyOverlayMode(overlay, mode);
+        if (!previewControls.isDestroyed()) {
+          if (mode === "preview") {
+            previewControls.showInactive();
+            previewControls.moveTop();
+          } else previewControls.hide();
+        }
       },
       setBounds(selected) {
         overlay.setBounds(selected.bounds);
+        previewControls.setBounds(previewControlBounds(selected));
       },
       async chooseImport() {
         const result = await dialog.showOpenDialog(main, {
@@ -100,21 +125,27 @@ export function createCalibrationDesktop(
 
   const publish = () => {
     const state = service.getState();
-    for (const window of [main, overlay]) {
+    for (const window of [main, overlay, previewControls]) {
       if (!window.isDestroyed()) window.webContents.send(desktopChannels.changed, state);
     }
   };
   service.onChange = publish;
-  const requireSender = (event: IpcMainInvokeEvent, allowOverlay = false) => {
-    const sender = [main, ...(allowOverlay ? [overlay] : [])].find(
-      (window) => !window.isDestroyed() && window.webContents === event.sender,
-    );
+  const requireSender = (
+    event: IpcMainInvokeEvent,
+    allowOverlay = false,
+    allowPreviewControls = false,
+  ) => {
+    const sender = [
+      main,
+      ...(allowOverlay ? [overlay] : []),
+      ...(allowPreviewControls ? [previewControls] : []),
+    ].find((window) => !window.isDestroyed() && window.webContents === event.sender);
     if (!sender || event.senderFrame !== sender.webContents.mainFrame)
       throw new Error("Untrusted calibration request");
   };
   const registered: string[] = [desktopChannels.state];
   ipcMain.handle(desktopChannels.state, (event) => {
-    requireSender(event, true);
+    requireSender(event, true, true);
     return service.getState();
   });
   function bind<T>(
@@ -122,11 +153,12 @@ export function createCalibrationDesktop(
     schema: z.ZodType<T>,
     action: (payload: T) => unknown,
     allowOverlay = false,
+    allowPreviewControls = false,
   ): void {
     registered.push(channel);
     ipcMain.handle(channel, async (event, input: unknown): Promise<DesktopResult> => {
       try {
-        requireSender(event, allowOverlay);
+        requireSender(event, allowOverlay, allowPreviewControls);
         const payload = schema.parse(input);
         await action(payload);
         return { ok: true };
@@ -150,7 +182,19 @@ export function createCalibrationDesktop(
     });
   }
   bind(desktopChannels.preview, pageIdSchema, (page) => service.preview(page));
-  bind(desktopChannels.hide, z.undefined(), () => service.hide());
+  bind(
+    desktopChannels.hide,
+    z.undefined(),
+    () => {
+      service.hide();
+      if (!main.isDestroyed()) {
+        main.show();
+        main.focus();
+      }
+    },
+    false,
+    true,
+  );
   bind(desktopChannels.edit, z.undefined(), () => service.edit());
   bind(desktopChannels.cancel, z.undefined(), () => service.cancel(), true);
   bind(desktopChannels.display, z.int(), (id) => service.selectDisplay(id));
@@ -174,14 +218,23 @@ export function createCalibrationDesktop(
   screen.on("display-removed", refreshDisplays);
   screen.on("display-metrics-changed", refreshDisplays);
   overlay.webContents.on("render-process-gone", () => service.rendererStopped());
+  previewControls.webContents.on("render-process-gone", () => {
+    service.rendererStopped();
+    if (!main.isDestroyed()) {
+      main.show();
+      main.focus();
+    }
+  });
   return {
     overlay,
+    previewControls,
     dispose() {
       for (const channel of registered) ipcMain.removeHandler(channel);
       screen.removeListener("display-added", refreshDisplays);
       screen.removeListener("display-removed", refreshDisplays);
       screen.removeListener("display-metrics-changed", refreshDisplays);
       if (!overlay.isDestroyed()) overlay.destroy();
+      if (!previewControls.isDestroyed()) previewControls.destroy();
     },
   };
 }

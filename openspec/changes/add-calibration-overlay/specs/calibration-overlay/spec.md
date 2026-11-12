@@ -36,7 +36,7 @@
 - **THEN** изменяется только этот слот, его ID сохраняется, а размеры остаются положительными и внутри рамки страницы
 
 ### Requirement: Редактирование и пропуск ввода
-Оверлей SHALL иметь состояния «скрыт», «редактирование» и «просмотр». В просмотре он SHALL пропускать мышь к окну под ним и SHALL не получать клавиатурный фокус; в скрытом состоянии SHALL не перехватывать ввод.
+The overlay canvas SHALL have hidden, editing and preview states. In preview it SHALL pass mouse input to the underlying window without taking keyboard focus. A separate compact preview-control panel SHALL accept pointer input only within its own bounds. Hidden windows SHALL not capture input.
 
 #### Scenario: Режим настройки
 - **WHEN** пользователь начинает редактирование из основного окна
@@ -44,10 +44,10 @@
 
 #### Scenario: Подтверждённая разметка
 - **WHEN** пользователь успешно сохраняет настройку и включает просмотр
-- **THEN** видны только разметка и включённые слоты, маркеры скрыты, а мышь и клавиатура доступны игре после её активации пользователем
+- **THEN** enabled-cell markup keeps its editing appearance without resize handles, a compact Hide panel is visible, and the canvas passes mouse and keyboard input to the game after the user activates it
 
 ### Requirement: Управление и выход из редактирования
-Основное окно SHALL предоставлять показ, скрытие и повторное редактирование оверлея. Отмена в оверлее и Escape при его фокусе SHALL отбрасывать черновик. Закрытие основного окна SHALL закрывать оверлей.
+The main window SHALL provide show, hide and edit controls. Cancel and Escape in the focused editor SHALL discard the draft. Closing the main window SHALL dispose the overlay canvas and preview-control panel.
 
 #### Scenario: Возврат из просмотра
 - **WHEN** пользователь возвращается в основное окно и выбирает редактирование
@@ -88,8 +88,26 @@ The overlay SHALL work on Windows over the game's borderless windowed mode witho
 - **THEN** the supported target is identified as borderless windowed mode; exclusive fullscreen and automatic game-window tracking are not supported
 
 ### Requirement: Изоляция интерфейса
-Окно оверлея SHALL сохранять изоляцию контекста, sandbox и отключённый доступ renderer к Node.js. Операции управления окном, импорта и хранения SHALL проверять входные данные и источник запроса.
+The overlay and preview-control windows SHALL retain context isolation, sandbox and disabled Node integration. Window, import and storage operations SHALL validate input and sender identity. The preview-control panel SHALL be limited to reading display state and hiding the overlay, without edit, import or file access permissions.
 
 #### Scenario: Некорректный запрос
 - **WHEN** интерфейс передаёт неизвестную команду, неверную геометрию или запрос приходит от постороннего окна
 - **THEN** запрос отклоняется без изменения окон, шаблонов и сохранённой калибровки
+
+### Requirement: Consistent appearance across modes
+Enabled cells SHALL retain the same geometry, colours, fills and labels in editing and preview. Resize handles and selection outlines SHALL appear only while editing. Disabled slots SHALL remain visible only in editing as required by calibration-layouts.
+
+#### Scenario: Save preserves the visual layout
+- **WHEN** the user saves an edited calibration and enters preview
+- **THEN** the same enabled cells remain at the same positions with the same labels and styling; only editing controls and handles are removed
+
+### Requirement: Visible preview exit controls
+Preview SHALL display a compact control panel on the selected monitor without automatically activating it. Its Hide button SHALL hide both the canvas and compact panel and show the main controls. The compact panel SHALL be absent in editing and hidden states.
+
+#### Scenario: Exit preview from the game
+- **WHEN** the user clicks Hide in the compact preview panel
+- **THEN** the overlay canvas and compact panel disappear, the main controls are shown, and saved calibration remains unchanged
+
+#### Scenario: Mode or display changes
+- **WHEN** preview ends, the selected display becomes incompatible or the application closes
+- **THEN** no detached preview-control panel remains visible

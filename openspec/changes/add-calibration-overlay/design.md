@@ -20,14 +20,16 @@
 
 ### 1. Отдельное окно оверлея, основной экран — панель управления
 
-Main владеет обычным окном управления и одним прозрачным безрамочным BrowserWindow поверх выбранного дисплея. У оверлея `transparent: true`, `frame: false`, `resizable: false`, нет нативной рамки; растягивается SVG-разметка внутри фиксированного окна, а не прозрачное OS-окно. Так учитывается ограничение Electron на изменение размера прозрачных окон. В dev и build используется один renderer entry с явным выбором представления main/overlay; фон overlay прозрачен, стили основного экрана не должны его заливать.
+Main owns three isolated windows: the ordinary controls, a transparent frameless canvas covering the selected display, and a compact opaque preview-control panel. The canvas remains transparent, frameless and nonresizable; SVG geometry is resized inside it. All three use the same renderer entry with an explicit main/overlay/preview-controls view. The compact panel is positioned near the selected display's top centre, clamped to its bounds, and has no taskbar entry.
 
 Состояния:
 - `hidden`: окно скрыто;
 - `editing`: окно принимает ввод, содержит черновик, рамки и маркеры; Escape отменяет и скрывает;
-- `preview`: показ без активации, `setIgnoreMouseEvents(true)` и запрет получения фокуса; изменение настроек доступно через основное окно.
+- `preview`: show the canvas without activation, ignore its mouse events and disable focus; show the compact Hide panel above it without activation or keyboard focus. Only that panel's small rectangle accepts pointer input.
 
-Вход в preview снимает фокус с оверлея; игра активируется пользователем, приложение не внедряет события для её активации. В editing пользователь временно работает с разметкой, а не с игрой. Глобальные хоткеи в первую итерацию не добавляются: Alt+Tab и основная панель обеспечивают доступ к управлению без конфликтов регистрации. Закрытие основного окна уничтожает оверлей; ошибка renderer скрывает его и сообщает об ошибке в основной панели.
+Preview releases canvas focus; the user activates the game without injected input. The compact panel's Hide action hides both preview windows and explicitly shows/focuses the main controls. Hide is the only mutation permitted from this window; other editing/import requests from it are rejected. Editing and hidden modes hide the compact panel. Main-window closure disposes both child windows and their handlers; a renderer failure hides preview and surfaces the error in the main controls. Global shortcuts remain out of scope, and Alt+Tab remains a fallback.
+
+Editing and preview share a single scene-building path for frames, enabled-cell positions and labels, with shared CSS for colour, stroke and fill. Editing additionally shows selection outlines, resize handles and disabled slots. This prevents Save from visually appearing to replace the layout when only the interaction mode changed. The compact preview panel uses the same visual palette as the editing toolbar.
 
 Альтернативы: рисование поверх игры внутри её процесса исключено из объёма; один прозрачный экран вместо панели делает управление в preview неудобным. Нативное изменение размера окна не используется из-за ограничений прозрачности.
 
