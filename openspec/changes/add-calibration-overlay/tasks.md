@@ -12,7 +12,7 @@
 ## 2. Окно оверлея и режимы ввода
 
 - [x] 2.1 Separate main/overlay renderer views and add an isolated transparent window covering the selected display. Verify test-overlay visibility on Windows in dev and build/start over borderless windowed PoE and with the game closed; record actual display settings and results before developing the full editor.
-- [ ] 2.2 Реализовать состояния hidden/editing/preview, отказ от фокуса и пропуск мыши в preview, скрытие при ошибке renderer и закрытие оверлея вместе с основным окном. Проверить переходы Vitest с Electron-адаптером и вручную: мышь/клавиатура доступны игре в preview, hidden не мешает вводу, возврат через основное окно возможен, оба окна закрываются.
+- [x] 2.2 Реализовать состояния hidden/editing/preview, отказ от фокуса и пропуск мыши в preview, скрытие при ошибке renderer и закрытие оверлея вместе с основным окном. Проверить переходы Vitest с Electron-адаптером и вручную: мышь/клавиатура доступны игре в preview, hidden не мешает вводу, возврат через основное окно возможен, оба окна закрываются.
 - [ ] 2.3 Добавить выбор дисплея и инвалидирование разметки при изменении bounds/scaleFactor/rotation, отключении дисплея и смене геометрической версии. Проверить Vitest со снимками дисплеев и вручную смену масштаба 100% ↔ 150%: старая разметка скрыта и предлагается новая калибровка; расширить ADR режимами окна и DPI.
 
 ## 3. Хранение, импорт и доверенная граница

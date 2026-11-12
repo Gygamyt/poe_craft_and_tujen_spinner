@@ -6,6 +6,7 @@ import { pageIds, type PageId } from "../../domain/calibration-layout";
 const state = ref<DesktopState>();
 const page = ref<PageId>("general");
 const error = ref("");
+const selectedDisplay = ref<number>();
 let unsubscribe: (() => void) | undefined;
 
 async function run(action: () => Promise<unknown>): Promise<void> {
@@ -18,13 +19,20 @@ async function run(action: () => Promise<unknown>): Promise<void> {
 }
 const preview = () => run(() => window.calibration.preview(page.value));
 const hide = () => run(() => window.calibration.hide());
+const edit = () => run(() => window.calibration.edit());
+const cancel = () => run(() => window.calibration.cancel());
+const selectDisplay = () =>
+  selectedDisplay.value !== undefined &&
+  run(() => window.calibration.selectDisplay(selectedDisplay.value!));
 
 onMounted(() => {
   unsubscribe = window.calibration.onState((next) => {
     state.value = next;
+    selectedDisplay.value = next.selectedDisplayId;
   });
   void run(async () => {
     state.value = await window.calibration.getState();
+    selectedDisplay.value = state.value.selectedDisplayId;
   });
 });
 onUnmounted(() => unsubscribe?.());
@@ -36,23 +44,39 @@ onUnmounted(() => unsubscribe?.());
     <h2>Проверка оверлея</h2>
     <p>Тестовая разметка: инвентарь 12 × 5 и выбранная страница стеша.</p>
     <label
+      >Монитор
+      <select v-model="selectedDisplay" :disabled="!state" @change="selectDisplay">
+        <option v-for="display in state?.displays ?? []" :key="display.id" :value="display.id">
+          {{ display.id }} · {{ display.bounds.width }} × {{ display.bounds.height }} DIP ·
+          {{ display.scaleFactor * 100 }}%
+        </option>
+      </select>
+    </label>
+    <label
       >Страница стеша
       <select v-model="page">
         <option v-for="id in pageIds" :key="id" :value="id">{{ id }}</option>
       </select>
     </label>
     <div class="actions">
-      <button :disabled="!state" @click="preview">Показать тестовую разметку</button>
+      <button
+        :disabled="!state || state.mode === 'editing' || state.requiresCalibration"
+        @click="preview"
+      >
+        Показать тестовую разметку
+      </button>
       <button :disabled="!state" @click="hide">Скрыть</button>
+      <button :disabled="!state" @click="edit">Редактировать</button>
+      <button v-if="state?.mode === 'editing'" @click="cancel">Отмена</button>
     </div>
     <p v-if="state">
       Монитор {{ state.profile.display.id }} · {{ state.profile.display.bounds.width }} ×
       {{ state.profile.display.bounds.height }} DIP · масштаб {{ state.profile.display.scaleFactor
-      }}<br />Оверлей {{ state.visible ? "показан" : "скрыт" }}
+      }}<br />Режим: {{ state.mode }}
     </p>
     <p class="hint">
       Разметка пока не двигается и не сохраняется. Она пропускает мышь; вернуться к управлению можно
-      через Alt+Tab. Проверьте видимость поверх игры в оконном и безрамочном режиме.
+      через Alt+Tab. Целевой режим игры — оконный безрамочный.
     </p>
     <p class="hint">
       Переключение страниц вручную. Эксклюзивный полноэкранный режим не поддерживается.
@@ -94,6 +118,7 @@ body {
 }
 .main-view .actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.75rem;
   margin: 1.5rem 0;
 }

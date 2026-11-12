@@ -9,6 +9,9 @@ const api: CalibrationDesktopApi = {
   getState: () => ipcRenderer.invoke(desktopChannels.state),
   preview: (page) => ipcRenderer.invoke(desktopChannels.preview, page),
   hide: () => ipcRenderer.invoke(desktopChannels.hide),
+  edit: () => ipcRenderer.invoke(desktopChannels.edit),
+  cancel: () => ipcRenderer.invoke(desktopChannels.cancel),
+  selectDisplay: (id) => ipcRenderer.invoke(desktopChannels.display, id),
   onState(listener) {
     const handler = (_event: Electron.IpcRendererEvent, state: DesktopState) => listener(state);
     ipcRenderer.on(desktopChannels.changed, handler);

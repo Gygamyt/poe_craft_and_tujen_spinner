@@ -17,9 +17,15 @@ Inventory is a regular grid; the General, Atlas and League currency pages have i
 
 This avoids hardcoded UI pixels and prevents a future label change from breaking saved coordinates. See [layout format](../calibration-layouts.md) for the schema example and reference audit.
 
-## Planned desktop boundary
+## Desktop window and input modes
 
-The approved design calls for a separate transparent, nonresizable BrowserWindow and an ordinary control window. SVG content will be resized inside the overlay rather than resizing the transparent native window. Main will own hidden/editing/preview transitions, display compatibility and typed IPC. These desktop, IPC and storage decisions remain to be implemented and verified; this record will be extended with actual results as those tasks close.
+The desktop uses a separate transparent, nonresizable BrowserWindow and an ordinary control window. SVG content is resized inside the overlay rather than resizing the transparent native window. Both windows retain context isolation, sandbox and disabled Node integration. The control window is explicitly shown and focused after loading: the first implicit-show probe was not visible to the user.
+
+Main owns hidden/editing/preview transitions. Editing enables native focus and pointer input. Preview releases focus, disables focusability and ignores mouse events before showing without activation. Hidden mode also releases input. Escape in the focused editor cancels the draft; the ordinary window remains the route back from click-through preview. Closing that window disposes the overlay, IPC handlers and display listeners.
+
+Display snapshots use bounds, scale factor and rotation. A display disappearing or changing those settings hides the overlay, preserves previous geometry and requires recalibration. Isolated tests cover DPI changes, signed origins, rotation, invalid requests and cleanup. Physical 100%/150% acceptance remains open until performed; geometry-version switching and persistence are subsequent tasks.
+
+The user confirmed the early dev overlay and build/start visibility over borderless windowed PoE and with PoE closed on a 3440 × 1440 display, including hide. The supported game mode is borderless windowed only; ordinary windowed mode is outside the acceptance scope. Automated geometry coverage spans six resolutions and four scales, without claiming native acceptance for all hardware.
 
 ## Consequences
 

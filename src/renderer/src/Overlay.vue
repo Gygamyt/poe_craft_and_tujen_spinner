@@ -19,8 +19,15 @@ onMounted(async () => {
     state.value = next;
   });
   state.value = await window.calibration.getState();
+  window.addEventListener("keydown", onKey);
 });
-onUnmounted(() => unsubscribe?.());
+function onKey(event: KeyboardEvent): void {
+  if (event.key === "Escape" && state.value?.mode === "editing") void window.calibration.cancel();
+}
+onUnmounted(() => {
+  unsubscribe?.();
+  window.removeEventListener("keydown", onKey);
+});
 </script>
 
 <template>
@@ -30,6 +37,9 @@ onUnmounted(() => unsubscribe?.());
     :viewBox="`0 0 ${state.profile.display.bounds.width} ${state.profile.display.bounds.height}`"
     aria-label="Calibration overlay"
   >
+    <text v-if="state.mode === 'editing'" x="24" y="32">
+      Editing · Esc to cancel · geometry controls are being added
+    </text>
     <g class="inventory"><rect v-for="(cell, index) in cells" :key="index" v-bind="cell" /></g>
     <g class="stash">
       <rect

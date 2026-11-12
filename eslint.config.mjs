@@ -22,6 +22,8 @@ export default defineConfig(
     },
     // Prettier owns template layout; keep Vue's semantic checks enabled.
     rules: {
+      // vue-tsc resolves TypeScript names, including DOM-only types such as KeyboardEvent.
+      "no-undef": "off",
       "vue/html-closing-bracket-newline": "off",
       "vue/html-indent": "off",
       "vue/max-attributes-per-line": "off",
