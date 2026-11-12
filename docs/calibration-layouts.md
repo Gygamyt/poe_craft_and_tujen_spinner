@@ -1,6 +1,6 @@
 # Calibration layout format
 
-The checked [example JSON](examples/calibration-layout.json) demonstrates the format, not a usable game layout. The bundled `src/layouts/reference-v1.json` is the manually enumerated starting layout from the user's screenshots. Coordinates describe slot interiors approximately; the overlay will support manual refinement.
+The checked [example JSON](examples/calibration-layout.json) demonstrates the format, not a usable game layout. The bundled `src/features/calibration/layouts/reference-v1.json` is the manually enumerated starting layout from the user's screenshots. Coordinates describe slot interiors approximately; the overlay supports manual refinement.
 
 ## Identity and labels
 

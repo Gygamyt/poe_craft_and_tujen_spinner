@@ -2,6 +2,7 @@ import js from "@eslint/js";
 import { defineConfig } from "eslint/config";
 import vue from "eslint-plugin-vue";
 import tseslint from "typescript-eslint";
+import featureBoundaries from "./tools/eslint/feature-boundaries.mjs";
 
 export default defineConfig(
   { ignores: ["out/**", "tmp/**"] },
@@ -14,6 +15,11 @@ export default defineConfig(
     extends: [js.configs.recommended, tseslint.configs.recommended],
   },
   ...vue.configs["flat/recommended"],
+  {
+    files: ["src/**/*.ts", "src/**/*.vue"],
+    plugins: { architecture: { rules: { "feature-boundaries": featureBoundaries } } },
+    rules: { "architecture/feature-boundaries": "error" },
+  },
   {
     files: ["**/*.vue"],
     languageOptions: {

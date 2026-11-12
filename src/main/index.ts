@@ -1,10 +1,11 @@
 import { app, BrowserWindow, screen } from "electron";
 import { join } from "node:path";
-import { createCalibrationDesktop, desktopPreferences } from "./calibration-desktop";
-import { WorkspaceStore } from "./workspace-store";
-import { createWorkspace } from "../domain/calibration-workspace";
-import { displaySnapshotSchema } from "../domain/calibration-layout";
-import { bundledLayout } from "../layouts";
+import {
+  createCalibrationDesktop,
+  desktopPreferences,
+} from "../platform/electron/calibration/desktop";
+import { WorkspaceStore } from "../platform/electron/calibration/workspace-store";
+import { createWorkspace, displaySnapshotSchema, bundledLayout } from "../features/calibration";
 
 async function createWindow(): Promise<void> {
   const display = screen.getPrimaryDisplay();

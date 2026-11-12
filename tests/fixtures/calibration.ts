@@ -1,4 +1,7 @@
-import { type CalibrationProfile, type LayoutTemplate } from "../../src/domain/calibration-layout";
+import {
+  type CalibrationProfile,
+  type LayoutTemplate,
+} from "../../src/features/calibration/domain/calibration-layout";
 
 export function templateFixture(): LayoutTemplate {
   const page = () => ({ slots: [{ id: "slot-001", bounds: { x: 0, y: 0, width: 1, height: 1 } }] });

@@ -1,7 +1,5 @@
 import { createApp } from "vue";
-import App from "./App.vue";
-import Overlay from "./Overlay.vue";
-import PreviewControls from "./PreviewControls.vue";
+import { App, Overlay, PreviewControls } from "../../features/calibration/ui";
 
 const view = new URLSearchParams(window.location.search).get("view");
 const component =

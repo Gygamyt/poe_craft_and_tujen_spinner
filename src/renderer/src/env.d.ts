@@ -1,4 +1,4 @@
-import type { CalibrationDesktopApi } from "../../domain/desktop-api";
+import type { CalibrationDesktopApi } from "../../features/calibration/contracts";
 
 declare global {
   interface Window {

@@ -1,5 +1,7 @@
 # Разработка PoE Autocraft
 
+Начинай навигацию с [карты кода](code-map.md): там указаны границы фич, публичные точки входа и профильные проверки.
+
 Настройка оверлея описана в [руководстве калибровки](calibration-overlay.md), формат сменяемых раскладок — в [описании шаблонов](calibration-layouts.md).
 
 Для запуска нужны Node.js 24 и npm. Команды выполняются из корня репозитория.
@@ -29,6 +31,8 @@ npm run typecheck
 npm run lint
 npm run format:check
 npm test
+npm run test:calibration
+npm run test:crafting
 ```
 
 `npm run format` форматирует исходники, тесты и конфигурацию. Vitest запускает проверки контрактов в Node.

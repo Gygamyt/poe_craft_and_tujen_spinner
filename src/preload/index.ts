@@ -4,7 +4,7 @@ import {
   type CalibrationDesktopApi,
   type DesktopState,
   type DesktopResult,
-} from "../domain/desktop-api";
+} from "../features/calibration/contracts";
 
 async function command(channel: string, payload?: unknown): Promise<void> {
   const result: DesktopResult = await ipcRenderer.invoke(channel, payload);
