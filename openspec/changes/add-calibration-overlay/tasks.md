@@ -24,14 +24,14 @@
 
 ## 4. Ручная настройка поверхностей
 
-- [ ] 4.1 Добавить панель выбора шаблона, монитора, инвентаря и одной страницы стеша, управления режимами, импорта с подтверждением и сообщений о несовместимой калибровке. Проверить вручную четыре поверхности, независимость переключения страниц, отмену импорта и доступность управления из preview.
+- [x] 4.1 Добавить панель выбора шаблона, монитора, инвентаря и одной страницы стеша, управления режимами, импорта с подтверждением и сообщений о несовместимой калибровке. Проверить вручную четыре поверхности, независимость переключения страниц, отмену импорта и доступность управления из preview.
 - [x] 4.2 Добавить SVG-сетку инвентаря с перетаскиванием и угловыми маркерами, используя проверенные преобразования. Проверить Vitest последовательности жестов и вручную совмещение 12 × 5 с инвентарём, ограничения размера и границ, сохранение и отмену через Escape.
 - [x] 4.3 Добавить растягивание рамки стеша, правку отдельных слотов, нейтральные подписи и включение/отключение без удаления. Проверить Vitest неизменность ID и соседних слотов, затем вручную все три страницы: общий resize, правка слота, отключение в preview и повторное включение с прежней геометрией.
-- [ ] 4.4 Connect save/cancel to persistence and restoration, preserving the draft for retry after write failure. Verify save/cancel/error integration tests, reordered snapshot replies after Save, and explicit submission of the visible geometry. Manually verify restart preserves coordinates/enabled flags; adding only defaultLabel must not reset calibration.
-- [ ] 4.5 Обновить руководство настройкой инвентаря и трёх страниц, возвращением из preview, работой с лишними слотами и ограничениями режимов игры. Проверить инструкцию ручным прохождением; явно указать отсутствие автоопределения вкладок, слежения за игрой и заполненного каталога валют.
+- [x] 4.4 Connect save/cancel to persistence and restoration, preserving the draft for retry after write failure. Verify save/cancel/error integration tests, reordered snapshot replies after Save, and explicit submission of the visible geometry. Manually verify restart preserves coordinates/enabled flags; adding only defaultLabel must not reset calibration.
+- [x] 4.5 Обновить руководство настройкой инвентаря и трёх страниц, возвращением из preview, работой с лишними слотами и ограничениями режимов игры. Проверить инструкцию ручным прохождением; явно указать отсутствие автоопределения вкладок, слежения за игрой и заполненного каталога валют.
 
 - [x] 4.6 Keep frames, enabled-slot labels and styling consistent across editing/preview using a shared scene model. Verify mode parity and disabled-slot filtering with Vitest, and manually confirm Save changes only editing affordances; update the guide and architecture record.
-- [ ] 4.7 Add an isolated compact preview panel on the selected display with a Hide button returning to main controls. Verify mode visibility, pointer/focus boundaries, sender permissions, display changes and all-window disposal with native-adapter tests and manual dev/build checks; update usage documentation.
+- [x] 4.7 Add an isolated compact preview panel on the selected display with a Hide button returning to main controls. Verify mode visibility, pointer/focus boundaries, sender permissions, display changes and all-window disposal with native-adapter tests and manual dev/build checks; update usage documentation.
 
 ## 5. Итоговая интеграционная приёмка
 
