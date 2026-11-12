@@ -1,4 +1,9 @@
-import type { CalibrationProfile, DisplaySnapshot, PageId } from "./calibration-layout";
+import type {
+  CalibrationProfile,
+  DisplaySnapshot,
+  LayoutTemplate,
+  PageId,
+} from "./calibration-layout";
 
 export const desktopChannels = {
   state: "calibration:state",
@@ -7,6 +12,15 @@ export const desktopChannels = {
   edit: "calibration:edit",
   cancel: "calibration:cancel",
   display: "calibration:display",
+  page: "calibration:page",
+  visibility: "calibration:visibility",
+  update: "calibration:update",
+  save: "calibration:save",
+  layout: "calibration:layout",
+  chooseImport: "calibration:choose-import",
+  confirmImport: "calibration:confirm-import",
+  cancelImport: "calibration:cancel-import",
+  reset: "calibration:reset",
   changed: "calibration:changed",
 } as const;
 
@@ -18,6 +32,13 @@ export interface DesktopState {
   displays: DisplaySnapshot[];
   selectedDisplayId: number;
   requiresCalibration: boolean;
+  templates: LayoutTemplate[];
+  activeLayoutKey: string;
+  inventoryVisible: boolean;
+  stashVisible: boolean;
+  busy: boolean;
+  recoveryRequired: boolean;
+  pendingImport?: { template: LayoutTemplate; kind: "new" | "metadata" };
   error?: string;
 }
 
@@ -28,5 +49,18 @@ export interface CalibrationDesktopApi {
   edit(): Promise<void>;
   cancel(): Promise<void>;
   selectDisplay(id: number): Promise<void>;
+  selectPage(page: PageId): Promise<void>;
+  setVisibility(inventory: boolean, stash: boolean): Promise<void>;
+  updateProfile(profile: CalibrationProfile): Promise<void>;
+  save(): Promise<void>;
+  selectLayout(key: string): Promise<void>;
+  chooseImport(): Promise<void>;
+  confirmImport(): Promise<void>;
+  cancelImport(): Promise<void>;
+  reset(): Promise<void>;
   onState(listener: (state: DesktopState) => void): () => void;
 }
+
+export type DesktopResult =
+  | { ok: true }
+  | { ok: false; error: { code: "invalid-request" | "operation-failed"; message: string } };

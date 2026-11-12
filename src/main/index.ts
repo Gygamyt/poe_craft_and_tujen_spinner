@@ -1,6 +1,10 @@
 import { app, BrowserWindow, screen } from "electron";
 import { join } from "node:path";
 import { createCalibrationDesktop, desktopPreferences } from "./calibration-desktop";
+import { WorkspaceStore } from "./workspace-store";
+import { createWorkspace } from "../domain/calibration-workspace";
+import { displaySnapshotSchema } from "../domain/calibration-layout";
+import { bundledLayout } from "../layouts";
 
 async function createWindow(): Promise<void> {
   const display = screen.getPrimaryDisplay();
@@ -17,7 +21,19 @@ async function createWindow(): Promise<void> {
     webPreferences: desktopPreferences(),
   });
 
-  const desktop = createCalibrationDesktop(window);
+  const initial = createWorkspace(bundledLayout, displaySnapshotSchema.parse(display));
+  const storage = new WorkspaceStore(
+    join(app.getPath("userData"), "calibration-workspace.json"),
+    initial,
+  );
+  let workspace = initial;
+  let loadError: string | undefined;
+  try {
+    workspace = await storage.load();
+  } catch (error) {
+    loadError = error instanceof Error ? error.message : "Cannot load calibration data";
+  }
+  const desktop = createCalibrationDesktop(window, { workspace, storage, loadError });
   window.on("closed", () => desktop.dispose());
   await loadView(desktop.overlay, "overlay");
   await loadView(window, "main");

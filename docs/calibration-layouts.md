@@ -30,4 +30,14 @@ Dark and empty slots are included. Tabs, decoration and the large central item r
 
 Templates contain no desktop coordinates. A user profile stores the display snapshot (signed desktop bounds, scale factor and rotation), a local inventory frame and a local frame plus normalized slot adjustments/enabled flags for each page. Display-local coordinates use DIP; physical pixels and `devicePixelRatio` must not be applied again.
 
-Pure schema and geometry tests validate the example, reference counts, missing labels, boundary failures, display origins and lossless JSON round trips. Overlay interaction, import UI and persistence are subsequent implementation tasks, not implemented by the format alone.
+Pure schema and geometry tests validate the example, reference counts, missing labels, boundary failures, display origins and lossless JSON round trips.
+
+## Import and persistence behavior
+
+The main process reads a layout only through its native JSON chooser. Import first prepares a candidate and summary; confirmation stores the version, while cancellation leaves the catalogue unchanged. A newly imported version remains inactive until explicitly selected. An existing geometry version can receive updated labels when its slot IDs and bounds are unchanged; slot ordering does not count as a geometry change.
+
+The application workspace file is `calibration-workspace.json` under Electron's `userData`. It contains templates, confirmed profiles and preferences. Draft geometry is excluded until Save succeeds. Save failure keeps the last confirmed file and editable draft, so the user can retry. Selecting a previously calibrated layout/display snapshot restores its profile; new geometry versions or incompatible display settings require calibration.
+
+An unreadable or unsupported workspace is preserved and automatic writes are blocked. The explicit Reset operation asks for confirmation, saves a recovery copy beside the workspace and then restores the bundled catalogue. A canceled reset leaves the original file intact. Tests cover both malformed JSON and unknown format versions using temporary directories.
+
+Native UI steps for the full editor are documented when its controls land; the service and storage rules above are already covered by isolated tests.
