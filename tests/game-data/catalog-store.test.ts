@@ -1,7 +1,7 @@
 import { DatabaseSync } from "node:sqlite";
 import { Worker } from "node:worker_threads";
 import { mkdtemp, rm, readFile, writeFile } from "node:fs/promises";
-import { join, resolve, sep, basename } from "node:path";
+import { join, resolve, sep, basename, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { afterEach, expect, it } from "vitest";
 import { CatalogStore } from "../../src/platform/sqlite/catalog-store";
@@ -107,6 +107,9 @@ it("recovers after a worker is terminated with an uncommitted snapshot", async (
 });
 it("keeps explicit readers pinned across activation and rejects conflicting IDs", async () => {
   const f = await fixture();
+  const calibration = join(dirname(f.file), "calibration-workspace.json");
+  const calibrationBytes = Buffer.from('{"geometry":"user-owned","revision":7}');
+  await writeFile(calibration, calibrationBytes);
   const old = catalogFixture();
   f.store.importSnapshot(manifestFixture(old), old);
   const next = catalogFixture();
@@ -120,6 +123,7 @@ it("keeps explicit readers pinned across activation and rejects conflicting IDs"
   expect(f.store.status().activeSnapshotId).toBe("fixture-1");
   expect(() => f.store.importSnapshot(manifestFixture(next), next)).toThrow("different data");
   expect(() => f.store.activate("missing")).toThrow("Snapshot unavailable");
+  expect(await readFile(calibration)).toEqual(calibrationBytes);
 });
 it("uses literal bounded search and fact filters without inferring mod eligibility", async () => {
   const f = await fixture();

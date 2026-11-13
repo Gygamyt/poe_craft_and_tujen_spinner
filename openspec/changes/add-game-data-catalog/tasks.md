@@ -18,12 +18,12 @@
 
 ## 4. Catalog inspection
 
-- [ ] 4.1 Add main-owned import dialogs and named IPC plus status, snapshot selector, base/modifier search, and detail UI; verify sender authorization, invalid payload rejection, import cancellation, bounded DTOs, provenance display, and unsupported/translation fallback states; update README and code-map entries.
-- [ ] 4.2 Import the accepted real pinned bundle and inspect a base/modifier/stat chain offline after restart; verify source revisions and patch evidence are shown, record import size/duration and query responsiveness, and confirm switching snapshots leaves calibration data unchanged. Synthetic fixtures alone cannot close this task.
+- [x] 4.1 Add main-owned import dialogs and named IPC plus status, snapshot selector, base/modifier search, and detail UI; verify sender authorization, invalid payload rejection, import cancellation, bounded DTOs, provenance display, and unsupported/translation fallback states; update README and code-map entries.
+- [x] 4.2 Import the accepted real pinned bundle and inspect a base/modifier/stat chain offline after restart; verify source revisions and patch evidence are shown, record import size/duration and query responsiveness, and confirm switching snapshots leaves calibration data unchanged. Synthetic fixtures alone cannot close this task.
 
 ## 5. Integration acceptance
 
-- [ ] 5.1 Run focused catalog and full tests, type checking, lint, format checking, build, strict OpenSpec validation, and git diff --check; record actual source/native/runtime limitations in current-state.md and commit only verified task-owned paths.
+- [x] 5.1 Run focused catalog and full tests, type checking, lint, format checking, build, strict OpenSpec validation, and git diff --check; record actual source/native/runtime limitations in current-state.md and commit only verified task-owned paths.
 
 ## Workflow follow-up
 

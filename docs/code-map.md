@@ -36,4 +36,4 @@ npm run build
 - Outside a feature, consume its root `index.ts` or `contracts.ts`. Main/platform composition can also consume its application entry; renderer composition can consume its UI entry. Feature-owned platform adapters can use their owned application entry. Internal deep paths are private.
 - Tests can import private implementation files to exercise behavior. They are outside the production boundary rule.
 
-Calibration's accepted functional baseline is recorded in the calibration specs and its accepted change history. Physical DPI checks remain open in [TD-001](progress/technical-debt.md). Catalog UI acceptance is tracked separately in the active change.
+Calibration's accepted functional baseline is recorded in the calibration specs and its accepted change history. Physical DPI checks remain open in [TD-001](progress/technical-debt.md). The built catalog inspector passed real-bundle import/inspection and offline restart acceptance; see [current state](progress/current-state.md).

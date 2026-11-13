@@ -1,5 +1,15 @@
 # Текущее состояние PoE Autocraft
 
+## add-game-data-catalog — final acceptance, 2026-11-13
+
+The user confirmed built-app import, provenance, Paua Amulet → ManaRegenerationImplicitAmulet1 → mana_regeneration_rate_+% (20–30), followed by lookup after a normal close/restart without reimport and retained calibration. Accepted snapshot: `poe1-3ac25f0277a2-c1e2111ca4bf`, declared patch 3.29.3.6. Desktop import took 3,240 ms for 70,309,353 bytes of records; separate source-worker measurements were 3,773 ms import, 8 ms/two overview queries and 192,360,448 database bytes. Query responsiveness was accepted interactively, without claiming a UI latency benchmark.
+
+Snapshot switching and byte-for-byte preservation of an independent calibration file are covered by file-backed two-snapshot tests; only one real source revision was used in desktop acceptance. Focused catalog verification passes 45 tests; full integration previously passed 234 tests / 33 files. Typecheck, lint, format, build, strict OpenSpec and diff checks passed for the implementation. After the final test-only calibration assertion, focused checks were repeated; production code is unchanged. Remaining limitations: 14 legacy translation groups have explicit unsupported stat references; league compatibility is unverified; no eligibility/probability model or price feed exists. TD-001 physical DPI checks remain open. Large source/bundle/SQLite files are local and ignored. User-owned staged `.DS_Store` and archive moves remain excluded.
+
+## Catalog desktop inspection accepted, 2026-11-13
+
+Task 4.1 is complete: the user confirmed the built inspector's real import, provenance, Paua Amulet search and implicit modifier/stat range inspection. The emitted worker logged snapshot `poe1-3ac25f0277a2-c1e2111ca4bf` and import duration 3,240 ms. The local bundle contains 70,309,353 bytes of records. The instance was closed normally and restarted without Vite for offline persistence acceptance; that confirmation is still pending. Native multi-DPI coverage remains TD-001; no price integration or crafting eligibility is claimed.
+
 ## add-game-data-catalog — inspector implementation, 2026-11-13
 
 Catalog inspector implementation is ready for desktop acceptance: main-owned folder import, authorized named IPC, bounded base/modifier queries, snapshot selection, provenance/hashes/coverage and raw detail warnings. The SQLite worker is lazy and closes with the main panel; calibration storage is unchanged. Added authorization, invalid payload, dialog cancellation/import and named preload tests. The existing calibration bridge tests now select the bridge by name instead of assuming exposure order.

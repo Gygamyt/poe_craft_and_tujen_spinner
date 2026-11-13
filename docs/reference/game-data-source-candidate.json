@@ -26,12 +26,19 @@
       "ManaRegenerationImplicitAmulet1"
     ]
   },
-  "acceptedBundle": false,
+  "acceptedBundle": true,
+  "acceptedSnapshotId": "poe1-3ac25f0277a2-c1e2111ca4bf",
+  "desktopAcceptance": {
+    "mode": "Electron build/start",
+    "importMs": 3240,
+    "recordBytes": 70309353,
+    "userConfirmedInspectionAndOfflineRestart": true
+  },
   "completeReferenceChainVerified": true,
   "leagueCompatibility": "unverified",
   "limitations": [
     "Source declared patch is verified from pinned metadata; player league compatibility remains unverified.",
-    "Bundle normalization/import checksums and application storage acceptance remain separate tasks.",
+    "The normalized bundle passed checksums/references, file-backed worker tests, and user-confirmed desktop import/inspection/offline restart.",
     "Non-core nullable source properties (for example gold_value) are retained as raw data; no claim of exact upstream JSON-schema conformance.",
     "No recipe eligibility, tier inference, or probability model is implemented."
   ],
