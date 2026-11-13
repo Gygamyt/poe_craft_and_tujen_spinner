@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
+import { probeChannels, type InputProbeApi } from "../features/testbed/contracts";
 import {
   desktopChannels,
   type CalibrationDesktopApi,
@@ -34,3 +35,14 @@ const api: CalibrationDesktopApi = {
   },
 };
 contextBridge.exposeInMainWorld("calibration", api);
+const probe: InputProbeApi = {
+  ready: () => ipcRenderer.invoke(probeChannels.ready),
+  received: (event) => ipcRenderer.send(probeChannels.received, event),
+  onResult(listener) {
+    const handler = (_event: Electron.IpcRendererEvent, result: { ok: boolean; error?: string }) =>
+      listener(result);
+    ipcRenderer.on(probeChannels.result, handler);
+    return () => ipcRenderer.removeListener(probeChannels.result, handler);
+  },
+};
+contextBridge.exposeInMainWorld("inputProbe", probe);

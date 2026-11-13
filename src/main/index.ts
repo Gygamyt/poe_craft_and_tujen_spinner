@@ -82,6 +82,20 @@ function openWindow(): void {
 }
 
 void app.whenReady().then(() => {
+  if (process.argv.includes("--input-probe")) {
+    void import("../platform/electron/testbed/probe")
+      .then(({ runInputProbe }) =>
+        runInputProbe({
+          preload: join(__dirname, "../preload/index.js"),
+          renderer: join(__dirname, "../renderer/index.html"),
+        }),
+      )
+      .catch((error: unknown) => {
+        console.error("INPUT_PROBE failed", error);
+        app.exit(1);
+      });
+    return;
+  }
   openWindow();
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {

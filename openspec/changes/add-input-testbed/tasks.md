@@ -2,8 +2,8 @@
 
 ## 1. Native compatibility gate
 
-- [ ] 1.1 Add the Windows x64 Koffi adapter skeleton and owned-target probe, keeping native code outside renderer bundles; verify native module loading, INPUT structure layout, foreground lookup, cursor lookup, and one delivered click in Electron dev and build/start. Stop and revise the plan if the gate fails.
-- [ ] 1.2 Document probe commands, dependency rationale, and actual runtime results in an input ADR and current-state.md; verify probe output records Electron/Node/architecture and received target events rather than DOM-dispatched substitutes.
+- [x] 1.1 Add the Windows x64 Koffi adapter skeleton and owned-target probe, keeping native code outside renderer bundles; verify native module loading, INPUT structure layout, foreground lookup, cursor lookup, and one delivered click in Electron dev and build/start. Stop and revise the plan if the gate fails.
+- [x] 1.2 Document probe commands, dependency rationale, and actual runtime results in an input ADR and current-state.md; verify probe output records Electron/Node/architecture and received target events rather than DOM-dispatched substitutes.
 
 ## 2. Motion and action execution
 

@@ -2,7 +2,7 @@ import vue from "@vitejs/plugin-vue";
 import { defineConfig } from "electron-vite";
 
 export default defineConfig({
-  main: {},
+  main: { build: { rollupOptions: { external: ["koffi"] } } },
   preload: {},
   renderer: {
     plugins: [vue()],

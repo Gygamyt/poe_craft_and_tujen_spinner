@@ -17,9 +17,12 @@
     "format:check": "prettier --check src tests tools package.json tsconfig.json electron.vite.config.ts eslint.config.mjs",
     "test": "vitest run",
     "test:calibration": "vitest run tests/calibration",
-    "test:crafting": "vitest run tests/crafting"
+    "test:crafting": "vitest run tests/crafting",
+    "probe:dev": "electron-vite dev -- --input-probe",
+    "probe:start": "electron . --input-probe"
   },
   "dependencies": {
+    "koffi": "3.3.8",
     "vue": "^3.5.0",
     "zod": "^4.0.0"
   },

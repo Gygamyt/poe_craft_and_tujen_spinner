@@ -1,5 +1,15 @@
 # Текущее состояние PoE Autocraft
 
+## add-input-testbed — 2026-11-13
+
+Gate 1.1–1.2 успешно завершён. Dev и build/start вернули INPUT_PROBE ok=true: Electron 45.3.1, Node 24.22.2, Windows x64, Koffi 3.3.8, INPUT size=40/dataOffset=8. В обоих режимах ожидаемый центр (313,192) DIP, получены trusted pointerdown/up около (312.8,191.2) и click (312,191). Пользователь подтвердил видимое сообщение успеха в сборке. Vite перед build/start остановлен. 134 теста, typecheck, lint, format:check, strict OpenSpec и diff checks успешны; production build успешен вне sandbox. Это только проверка ABI/native delivery: плавность, runner и полный testbed ещё впереди.
+
+Ход gate: установлен Koffi 3.3.8, добавлен opt-in probe с отдельным sandboxed-окном и main-owned HWND. Первый автоматический запуск остановлен проверкой foreground до отправки событий; запуск переведён на явную кнопку Start.
+
+При отладке HMR дублировал listeners, меню смещало клиентскую Y-координату примерно на 14 DIP, последующий IPC обращался к уничтоженному окну. Исправлено через unmount cleanup, removeMenu и раннюю проверку завершения; позднее сообщение покрыто guard-тестом. Тестовые окна завершились самостоятельно.
+
+Шесть изолированных guard-тестов, typecheck и lint после исправлений успешны. Полный запуск до этих последних исправлений: 134 теста; format:check и strict OpenSpec validation успешны. Они не заменяют native-приёмку. Установка npm внутри sandbox не дала ответа; после остановки повтор вне sandbox успешен. npm сообщил прежние 7 moderate vulnerabilities; автоматические обновления не выполнялись. Подробности: [ADR-0004](../architecture/0004-desktop-input.md), [команды пробы](../input-testbed.md).
+
 ## organize-feature-modules — 2026-11-12
 
 План согласован, реализация выполнена. Чистая логика, orchestration, Vue-экраны и bundled layout принадлежат `src/features/calibration`; существующие crafting-контракты — `src/features/crafting`. Electron-окна, IPC, storage и режимы ввода перенесены в `src/platform/electron/calibration`. Имена IPC, sender permissions, формат и путь workspace, layout/slot IDs, сохранение и порядок revision не менялись. OverlayMode теперь объявлен в чистом контракте. [Карта кода](../code-map.md) и [ADR-0003](../architecture/0003-feature-modules.md) фиксируют точки входа и причины выбора.
