@@ -44,6 +44,7 @@ async function run(action: () => Promise<unknown>): Promise<void> {
   }
 }
 const api = window.calibration;
+const openCatalog = () => run(() => window.catalog.open());
 const selectPage = () => run(() => api.selectPage(page.value));
 const selectDisplay = () => run(() => api.selectDisplay(selectedDisplay.value!));
 const selectLayout = () => run(() => api.selectLayout(selectedLayout.value));
@@ -61,6 +62,7 @@ onUnmounted(() => unsubscribe?.());
     <header>
       <h1>PoE Autocraft</h1>
       <button @click="openTestbed">Стенд ввода</button>
+      <button @click="openCatalog">Каталог данных</button>
       <span>Калибровка</span>
     </header>
     <fieldset :disabled="!state || state.busy || pending">

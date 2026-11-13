@@ -7,6 +7,7 @@ import {
 import { WorkspaceStore } from "../platform/electron/calibration/workspace-store";
 import { createWorkspace, displaySnapshotSchema, bundledLayout } from "../features/calibration";
 import { createTestbedHost } from "../platform/electron/testbed/desktop";
+import { createCatalogHost } from "../platform/electron/game-data/desktop";
 
 async function createWindow(): Promise<void> {
   const display = screen.getPrimaryDisplay();
@@ -40,7 +41,12 @@ async function createWindow(): Promise<void> {
     preload: join(__dirname, "../preload/index.js"),
     renderer: join(__dirname, "../renderer/index.html"),
   });
+  const catalog = createCatalogHost(window, {
+    preload: join(__dirname, "../preload/index.js"),
+    renderer: join(__dirname, "../renderer/index.html"),
+  });
   window.on("closed", () => {
+    void catalog.dispose().catch((error) => console.error("Catalog close failed", error));
     desktop.dispose();
     testbed.dispose();
   });
@@ -50,6 +56,7 @@ async function createWindow(): Promise<void> {
   window.show();
   window.focus();
   if (process.argv.includes("--input-testbed-harness")) await testbed.open();
+  if (process.argv.includes("--catalog-inspector")) await catalog.open();
   if (process.env.ELECTRON_RENDERER_URL) {
     console.info("Control window ready", {
       visible: window.isVisible(),

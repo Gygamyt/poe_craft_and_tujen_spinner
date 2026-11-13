@@ -15,7 +15,9 @@ vi.mock("electron", () => ({
 import "../../src/preload";
 
 it("exposes only named operations and never accepts a renderer-supplied file path", async () => {
-  const [name, exposed] = bridge.exposeInMainWorld.mock.calls[0];
+  const [name, exposed] = bridge.exposeInMainWorld.mock.calls.find(
+    ([name]) => name === "calibration",
+  )!;
   const api = exposed as CalibrationDesktopApi;
   expect(name).toBe("calibration");
   expect(Object.keys(api).sort()).toEqual(
@@ -47,7 +49,9 @@ it("exposes only named operations and never accepts a renderer-supplied file pat
 });
 
 it("preserves typed operation error codes across the bridge", async () => {
-  const api = bridge.exposeInMainWorld.mock.calls[0][1] as CalibrationDesktopApi;
+  const api = bridge.exposeInMainWorld.mock.calls.find(
+    ([name]) => name === "calibration",
+  )![1] as CalibrationDesktopApi;
   bridge.invoke.mockResolvedValueOnce({
     ok: false,
     error: { code: "invalid-request", message: "Invalid request" },

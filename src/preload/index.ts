@@ -1,4 +1,15 @@
 import { contextBridge, ipcRenderer } from "electron";
+import { catalogChannels, type CatalogDesktopApi } from "../features/game-data/contracts";
+const catalog: CatalogDesktopApi = {
+  open: () => ipcRenderer.invoke(catalogChannels.open),
+  status: () => ipcRenderer.invoke(catalogChannels.status),
+  query: (query) => ipcRenderer.invoke(catalogChannels.query, query),
+  detail: (kind, id, snapshotId) =>
+    ipcRenderer.invoke(catalogChannels.detail, { kind, id, snapshotId }),
+  activate: (id) => ipcRenderer.invoke(catalogChannels.activate, id),
+  chooseImport: () => ipcRenderer.invoke(catalogChannels.import),
+};
+contextBridge.exposeInMainWorld("catalog", catalog);
 import {
   probeChannels,
   testbedChannels,

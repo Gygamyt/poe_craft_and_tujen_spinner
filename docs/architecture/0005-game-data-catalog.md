@@ -24,6 +24,12 @@ The initial candidate is the [RePoE PoE 1 export repository](https://github.com/
 
 The initial source contains 5,461 bases, 40,355 modifiers, 23,362 stats and 11,257 translation groups. Generated game data belongs to Grinding Gear Games under its terms; RePoE parser code uses a separate MIT license. Full data snapshots remain in ignored local storage. Retain these notices in import provenance. Some non-core raw fields (such as nullable gold_value) differ from the published JSON schema; preserve them as raw payloads and validate the adapter's explicit core coverage. Source acceptance is not normalized-bundle/import acceptance, league detection, or a crafting solver.
 
+## Desktop inspector
+
+The main panel opens a separate sandboxed inspector. Only the main panel's main frame may open it; only the registered inspector main frame may invoke catalog operations. Named IPC validates query/detail/snapshot DTOs before storage access. Imports accept no renderer path: a main-owned folder dialog supplies the bundle directory. The worker is created lazily and closes with the main panel. Navigation and new windows are denied. Search results retain their snapshot and record kind for detail links; loading and errors are visible.
+
+The inspector displays the manifest's patch verification, unknown league compatibility, coverage, revisions and file hashes. Details retain warning messages and raw records; missing names use stable IDs. This is an inspection surface, not a crafting-eligibility solver.
+
 ## Alternatives and boundaries
 
 ## Bundle boundary
@@ -42,4 +48,4 @@ The developer CLI runs on Node 24's TypeScript stripping, with explicit `.ts` im
 
 - External SQLite bindings are unnecessary while the Electron-bundled API passes its required gates.
 - JSON remains appropriate for immutable source bundles and small test fixtures; the calibration settings retain their existing JSON recovery flow.
-- Worker diagnostic success does not establish real-game data compatibility or eligibility rules. No downstream importer, UI, market-price feed or first recipe is implemented in this step.
+- Worker diagnostic success does not establish crafting eligibility rules. Market-price feeds and a first recipe remain outside this change.

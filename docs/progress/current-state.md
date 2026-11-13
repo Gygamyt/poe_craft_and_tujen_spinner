@@ -1,5 +1,11 @@
 # Текущее состояние PoE Autocraft
 
+## add-game-data-catalog — inspector implementation, 2026-11-13
+
+Catalog inspector implementation is ready for desktop acceptance: main-owned folder import, authorized named IPC, bounded base/modifier queries, snapshot selection, provenance/hashes/coverage and raw detail warnings. The SQLite worker is lazy and closes with the main panel; calibration storage is unchanged. Added authorization, invalid payload, dialog cancellation/import and named preload tests. The existing calibration bridge tests now select the bridge by name instead of assuming exposure order.
+
+Verification: all 234 tests / 33 files pass; typecheck, lint (no warnings), format:check, production build, strict change validation and diff checks pass. Build retains upstream Zod annotation warnings; Node source-worker tests retain experimental SQLite and typeless-module advisories. The built inspector has been started for real-bundle UI acceptance. Tasks 4.1/4.2 remain unchecked until the requested desktop inspection and offline restart are confirmed; final integration task remains open. User-owned staged files and OpenSpec archive moves are excluded from these changes.
+
 ## add-game-data-catalog — 2026-11-13, runtime gate в работе
 
 Задачи 3.1–3.3: реализованы SQLite schema 1, composite FK, immutable snapshots, atomic activation, bounded literal search/detail, snapshot pinning и сохранение повреждённых/неподдерживаемых файлов. Проверены реальные SQL-trigger rollback, первая неуспешная загрузка, worker termination до COMMIT, повторное открытие, FK, snapshot conflicts, escaping и raw/ordered weights. Политика backup-before-migration документирована; миграций в первой версии схемы нет, неизвестные версии не переписываются. Профильный набор — 41 тест, typecheck/lint/format прошли. Реальный source-worker import/reopen: 3 773 ms, два overview query — 8 ms, БД 192 360 448 bytes; восстановлены 5 461 база/40 355 модов и Paua chain. Inspector/user-data acceptance ещё впереди.

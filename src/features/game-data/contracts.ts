@@ -1,5 +1,19 @@
 import type { CatalogManifest, CatalogQuery } from "./domain/bundle.ts";
 
+export const catalogChannels = {
+  open: "catalog:open",
+  status: "catalog:status",
+  query: "catalog:query",
+  detail: "catalog:detail",
+  activate: "catalog:activate",
+  import: "catalog:import",
+} as const;
+export interface CatalogDesktopApi extends CatalogReader {
+  open(): Promise<void>;
+  status(): Promise<CatalogStatus>;
+  chooseImport(): Promise<{ canceled: boolean; status?: CatalogStatus; importMs?: number }>;
+}
+
 export interface CatalogStatus {
   available: boolean;
   activeSnapshotId?: string;
