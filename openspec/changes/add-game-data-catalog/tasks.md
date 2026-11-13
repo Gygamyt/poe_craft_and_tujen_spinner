@@ -2,8 +2,8 @@
 
 ## 1. Runtime and source acceptance gates
 
-- [ ] 1.1 Add the SQLite repository port and minimal worker entry point; verify node:sqlite worker loading, file-backed reopen, and a simple query under Electron dev and build/start before downstream catalog work; record exact runtime results.
-- [ ] 1.2 Pin mutually consistent RePoE PoE 1 export revisions and translation sources, inspect schemas/notices and patch evidence, and record the supported coverage in a catalog ADR and source manifest; verify one real base/modifier/stat chain resolves without fabricated fields. Revise scope if no compatible source satisfies this gate.
+- [x] 1.1 Add the SQLite repository port and minimal worker entry point; verify node:sqlite worker loading, file-backed reopen, and a simple query under Electron dev and build/start before downstream catalog work; record exact runtime results.
+- [x] 1.2 Pin mutually consistent RePoE PoE 1 export revisions and translation sources, inspect schemas/notices and patch evidence, and record the supported coverage in a catalog ADR and source manifest; verify one real base/modifier/stat chain resolves without fabricated fields. Revise scope if no compatible source satisfies this gate.
 
 ## 2. Bundles and reproducible refresh
 
@@ -26,6 +26,9 @@
 - [ ] 5.1 Run focused catalog and full tests, type checking, lint, format checking, build, strict OpenSpec validation, and git diff --check; record actual source/native/runtime limitations in current-state.md and commit only verified task-owned paths.
 
 ## Workflow follow-up
+
+- Runtime gate passed: source-worker tests and actual emitted-worker dev/build probes verified SQLite persistence and reopen.
+- Source gate passed: pinned source files, SHA-256 hashes, notices, counts and a real base/modifier/stat/English-translation chain are recorded in docs/reference/game-data-source-candidate.json. Normalized bundle/import acceptance remains separate.
 
 - Review and approve this plan before implementation; follow the agreed structure -> input/testbed -> catalog sequence.
 - Define the first recipe with the user after inspecting an accepted catalog: base/item level/state, success predicates, allowed currencies, budget, supported mechanics, and stop conditions.

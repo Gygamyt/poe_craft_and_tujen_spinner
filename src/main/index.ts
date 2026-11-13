@@ -91,6 +91,16 @@ function openWindow(): void {
 }
 
 void app.whenReady().then(() => {
+  if (process.argv.includes("--catalog-runtime-probe")) {
+    void import("../platform/electron/game-data/runtime-probe")
+      .then(({ runCatalogRuntimeProbe }) => runCatalogRuntimeProbe())
+      .then(() => app.quit())
+      .catch((error: unknown) => {
+        console.error("CATALOG_RUNTIME_PROBE failed", error);
+        app.exit(1);
+      });
+    return;
+  }
   if (process.argv.includes("--input-probe")) {
     void import("../platform/electron/testbed/probe")
       .then(({ runInputProbe }) =>

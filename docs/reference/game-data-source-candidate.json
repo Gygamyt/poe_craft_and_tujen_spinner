@@ -1,0 +1,202 @@
+{
+  "status": "source-accepted-for-initial-adapter",
+  "game": "poe1",
+  "repository": "repoe-fork/repoe-fork.github.io",
+  "revision": "3ac25f0277a23296b5799e5eaa911dd46f68e6e0",
+  "declaredPatch": "3.29.3.6",
+  "schemaRevision": "9ccbbba4d40b693b1fe5d6c689d7f6ca324be312",
+  "observedOn": "2026-11-13",
+  "gitBlobs": {
+    "exported-version.txt": "1403a84d5adb088768029815f5111dca2d96da6d",
+    "schema.txt": "d27a464c81a16db40ff8d903835ca0e82e99515b",
+    "data/base_items.json": "90e4b898e7259194033967b085db070d6800b398",
+    "data/mods.json": "dce341f246eda89ff7767ce14f41017aa048de03",
+    "data/base_items/Amulet.json": "726da84ebd75189d876e5abd2c9a9debec5066db",
+    "data/data-formats/mods.json": "d05368916e42fd7fb7eba41452b0c95e6ecf0518"
+  },
+  "inspectedBase": {
+    "id": "Metadata/Items/Amulets/Amulet1",
+    "name": "Paua Amulet",
+    "itemClass": "Amulet",
+    "tags": [
+      "amulet",
+      "default"
+    ],
+    "implicitModifierIds": [
+      "ManaRegenerationImplicitAmulet1"
+    ]
+  },
+  "acceptedBundle": false,
+  "completeReferenceChainVerified": true,
+  "leagueCompatibility": "unverified",
+  "limitations": [
+    "Source declared patch is verified from pinned metadata; player league compatibility remains unverified.",
+    "Bundle normalization/import checksums and application storage acceptance remain separate tasks.",
+    "Non-core nullable source properties (for example gold_value) are retained as raw data; no claim of exact upstream JSON-schema conformance.",
+    "No recipe eligibility, tier inference, or probability model is implemented."
+  ],
+  "sourceFiles": [
+    {
+      "path": "exported-version.txt",
+      "bytes": 9,
+      "sha256": "1fe87f0488a7eb2a8c051156dd9962d2f5ffd2a5a9d9e08f8ed8f3c89ba629c2"
+    },
+    {
+      "path": "schema.txt",
+      "bytes": 57,
+      "sha256": "8bbf7aa1824529d49538e948c8d67866f8efbfdfb7bf7198a293c09113c2c519"
+    },
+    {
+      "path": "data/base_items.json",
+      "bytes": 8025343,
+      "sha256": "48afb07a5f40eb51552f90c17d53186469db282a2e759dab7b46e7f9d2a0f58b"
+    },
+    {
+      "path": "data/mods.json",
+      "bytes": 34279076,
+      "sha256": "8ffecc59131a5456f9d40316e81e527c560f055da1ea85c32e8d300135b6a2c4"
+    },
+    {
+      "path": "data/stats.json",
+      "bytes": 4966725,
+      "sha256": "fde4195da85d49d770bd51f6a6823200003d5bf29560e8a445c8d028276bde52"
+    },
+    {
+      "path": "data/tags.json",
+      "bytes": 32003,
+      "sha256": "25df913abd459bedd3dc1b649e344b353e271ed0a32162f116d66034a3269b50"
+    },
+    {
+      "path": "data/item_classes.json",
+      "bytes": 17659,
+      "sha256": "678fa3ba653c2750c38ddba4eed2c0f7d6c5ec040b2bbc07bc502fed69c5e632"
+    },
+    {
+      "path": "data/mod_types.json",
+      "bytes": 1203551,
+      "sha256": "d93778b1b53f2aaca93355dea0bf61a080bd2bb785a0e36f954231fd98ef44ad"
+    },
+    {
+      "path": "data/stat_translations.json",
+      "bytes": 12631803,
+      "sha256": "5d2a471d222694f4a315357edff91764349e7ff7e8066e97e010fb1a8dfeef5e"
+    },
+    {
+      "path": "data/data-formats/base_items.json",
+      "bytes": 7717,
+      "sha256": "3a95ad39fac751bc8dadded745cb1c3f9a7251b8b20cdbd08cf8fac3f8428c3b"
+    },
+    {
+      "path": "data/data-formats/mods.json",
+      "bytes": 4685,
+      "sha256": "8671003383a95cabf31903212b7797f65b3896491aaa8e33800a7959cb32b544"
+    },
+    {
+      "path": "data/data-formats/stats.json",
+      "bytes": 1299,
+      "sha256": "0cdf8a92257ff67201606b8f214fee10131efdbb2c13a5634a75b3a2c9c53681"
+    },
+    {
+      "path": "data/data-formats/stat_translations.json",
+      "bytes": 6485,
+      "sha256": "2ce96b36a1f80e184780e0c5d03384e0d49d1a4509b556d87834e6d030af3c2f"
+    }
+  ],
+  "counts": {
+    "bases": 5461,
+    "mods": 40355,
+    "stats": 23362,
+    "tags": 1389,
+    "classes": 103,
+    "modTypes": 14554,
+    "translations": 11257
+  },
+  "evidenceChain": {
+    "baseId": "Metadata/Items/Amulets/Amulet1",
+    "modifierId": "ManaRegenerationImplicitAmulet1",
+    "modifier": {
+      "domain": "item",
+      "generationType": "unique",
+      "requiredLevel": 2,
+      "groups": [
+        "ManaRegeneration"
+      ],
+      "stats": [
+        {
+          "id": "mana_regeneration_rate_+%",
+          "max": 30,
+          "min": 20
+        }
+      ],
+      "text": "(20-30)% increased Mana Regeneration Rate"
+    },
+    "stat": {
+      "id": "mana_regeneration_rate_+%",
+      "alias": {
+        "when_in_off_hand": null,
+        "when_in_main_hand": null
+      },
+      "is_aliased": false,
+      "is_local": false,
+      "is_scalable": true
+    },
+    "translation": {
+      "ids": [
+        "mana_regeneration_rate_+%"
+      ],
+      "English": [
+        {
+          "condition": [
+            {
+              "min": 1,
+              "max": null,
+              "negated": null
+            }
+          ],
+          "format": [
+            "#"
+          ],
+          "index_handlers": [
+            []
+          ],
+          "string": "{0}% increased Mana Regeneration Rate",
+          "reminder_text": null,
+          "is_markup": null
+        },
+        {
+          "condition": [
+            {
+              "min": null,
+              "max": -1,
+              "negated": null
+            }
+          ],
+          "format": [
+            "#"
+          ],
+          "index_handlers": [
+            [
+              "negate"
+            ]
+          ],
+          "string": "{0}% reduced Mana Regeneration Rate",
+          "reminder_text": null,
+          "is_markup": null
+        }
+      ]
+    }
+  },
+  "requiredReferenceErrors": 0,
+  "notices": [
+    {
+      "owner": "Grinding Gear Games",
+      "scope": "Generated game data; local import only, no redistribution of full snapshots in Git",
+      "url": "https://github.com/repoe-fork/repoe/blob/master/LICENSE.md"
+    },
+    {
+      "owner": "RePoE contributors",
+      "scope": "Parser code MIT; separate from generated game-data ownership",
+      "url": "https://github.com/repoe-fork/repoe"
+    }
+  ]
+}

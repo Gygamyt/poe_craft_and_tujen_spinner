@@ -22,7 +22,10 @@
     "probe:start": "electron . --input-probe",
     "test:input": "vitest run tests/input tests/testbed",
     "test:native:dev": "electron-vite dev -- --input-testbed-harness",
-    "test:native:start": "electron . --input-testbed-harness"
+    "test:native:start": "electron . --input-testbed-harness",
+    "test:catalog": "vitest run tests/game-data",
+    "probe:catalog:dev": "electron-vite dev -- --catalog-runtime-probe",
+    "probe:catalog:start": "electron . --catalog-runtime-probe"
   },
   "dependencies": {
     "koffi": "3.3.8",

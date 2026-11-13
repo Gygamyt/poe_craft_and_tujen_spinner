@@ -1,5 +1,21 @@
 # Текущее состояние PoE Autocraft
 
+## add-game-data-catalog — 2026-11-13, runtime gate в работе
+
+Обновление source gate 1.2: 13 файлов закреплённого export revision загружены в ignored tmp, JSON разобран, SHA-256 сохранены отдельно от Git blob IDs. Приняты 5 461 база, 40 355 модов, 23 362 стата, 1 389 тегов и 11 257 translation groups. Проверены ссылки base/class/implicit-mod и mod/stat/type/tags без пропусков. Цепочка Paua Amulet → ManaRegenerationImplicitAmulet1 → mana_regeneration_rate_+% → English translation подтверждена на реальных данных (20–30). Проверены attribution/ownership notices; полные snapshots в Git не добавлялись. League compatibility, normalized bundle и import acceptance остаются отдельными проверками. Nullable non-core поля сохраняются raw; полная идентичность upstream JSON-schema не заявляется.
+
+Обновление после возвращения пользователя: задача 1.1 завершена. `probe:catalog:dev` и свежая build/`probe:catalog:start` вернули CATALOG_RUNTIME_PROBE ok=true, SQLite 3.53.4 / Node 24.22.2 / Electron 45.3.1. Worker threadId 1 записал first-open, threadId 2 после reopen прочитал first-open и записал reopened. Проверены именно emitted worker-файлы electron-vite. Vite перед build/start отсутствовал на 5173, процессы завершились сами; исходная calibration/workspace не затрагивалась. Ограничение на коммиты/approvals пользователем завершено.
+
+Итог этого прохода: 196 тестов / 26 файлов, typecheck, lint, format:check, strict OpenSpec validation, diff check и проверка ссылок карты кода успешны. Исходные задачи 1.1/1.2 не отмечались завершёнными. Все изменения оставлены незакоммиченными согласно временному указанию пользователя. Получение большого mods.json через read-only GitHub fetch также отклонено как too large/unsupported; для source gate нужен отдельный способ получения полного pinned snapshot, когда разрешённые условия работы будут уточнены.
+
+По команде пользователя начат каталог данных. На этот проход пользователь временно запретил коммиты и команды, требующие подтверждения. Выполнялись только sandbox-проверки, headless Electron и read-only исследования источника; GUI, production build и git mutations не запускались.
+
+Добавлены чистый repository port, минимальный SQLite worker, bounded RPC (16 запросов, deadline, request IDs, failure/close cleanup), scratch-file probe и будущие dev/build команды диагностики. Семь file-backed/lifecycle тестов прошли под Node и повторно под headless Electron: Node 24.22.2, Electron 45.3.1, SQLite 3.53.4, reopened=true. `available:false` означает отсутствие реального каталога; import/query/UI пока не реализованы.
+
+Задача 1.1 остаётся открытой: source-worker тесты не заменяют требуемые проверки emitted worker в Electron dev и build/start. До прохождения gate downstream реализация не начата. Реальная user-data БД и calibration JSON не затрагивались.
+
+Зафиксирован кандидат RePoE export commit 3ac25f0277a23296b5799e5eaa911dd46f68e6e0 с pinned exported-version.txt=3.29.3.6 и schema revision 9ccbbba4d40b693b1fe5d6c689d7f6ca324be312. Показана реальная база Paua Amulet и её ссылка на implicit mod; полная base/mod/stat/translation цепочка ещё не проверена. Большие GitHub content ответы вернули пустой payload с blob metadata — содержимое не выдумывалось. Кандидат не принят как импортируемый snapshot; 1.2 также открыта. [ADR-0005](../architecture/0005-game-data-catalog.md), [описание проверок](../game-data-catalog.md).
+
 ## add-input-testbed — 2026-11-13
 
 Итог: реализация и native-приёмка завершены. Dev и build/start — INPUT_NATIVE_SUITE ok=true, по 16 проверок; в bounded trace осталось 232/233 полученных события соответственно. Пользователь подтвердил плавные движения в dev и успешный полный сценарий сборки. Оставшаяся тестовая панель остановлена; PoE не использовался. После замечания о выделении текста добавлен user-select:none на поверхности стенда с user-select:text у seed input; эта CSS-правка собрана, но отдельный визуальный повтор не выполнялся. Следующее изменение — каталог данных; TD-001 сохраняется без новых заявлений о DPI-покрытии.
