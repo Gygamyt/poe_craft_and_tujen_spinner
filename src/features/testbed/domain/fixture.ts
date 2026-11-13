@@ -1,6 +1,7 @@
 import { bundledLayout, materializeSlot, type PageId, type Rectangle } from "../../calibration";
 import { seededRandom } from "../../input";
 import { validatePlacements, projectPlacement, type Placement } from "../../inventory";
+import { testbedLayout } from "./layout";
 export const inventoryGrid = { columns: 12, rows: 5 };
 export const footprintPresets = {
   "1x1": { width: 1, height: 1 },
@@ -104,16 +105,14 @@ export function configureFixture(state: Fixture, value: FixturePlacement): Fixtu
   return next;
 }
 export function fixtureInventoryArea(viewport: { width: number; height: number }): Rectangle {
-  const width = viewport.width * 0.46;
-  return { x: viewport.width * 0.51, y: 250, width, height: (width * 5) / 12 };
+  return testbedLayout(viewport).inventory;
 }
 
 export function fixtureTargets(
   state: Fixture,
   viewport: { width: number; height: number },
 ): FixtureTarget[] {
-  const size = Math.min(viewport.width * 0.43, viewport.height - 260);
-  const stash = { x: 15, y: 230, width: size, height: size };
+  const { stash } = testbedLayout(viewport);
   return [
     ...bundledLayout.pages[state.page].slots.map((slot) => {
       const id = `${state.page}/${slot.id}`;

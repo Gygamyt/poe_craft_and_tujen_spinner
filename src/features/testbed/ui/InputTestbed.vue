@@ -3,6 +3,8 @@ import { computed, onMounted, onUnmounted, ref } from "vue";
 import type { ObservedEvent, TestbedCommand, TestbedState } from "../contracts";
 import { fixtureInventoryArea, footprintPresets } from "../domain/fixture";
 import { inventoryCells } from "../../calibration";
+import { testbedLayout } from "../domain/layout";
+const layout = computed(() => (state.value ? testbedLayout(state.value.viewport) : undefined));
 const preset = ref<keyof typeof footprintPresets>("1x1");
 const column = ref(0),
   row = ref(0),
@@ -86,6 +88,13 @@ function slotStyle(bounds: { x: number; y: number; width: number; height: number
   <main v-if="state" class="testbed" @contextmenu.prevent>
     <header>
       <strong>Стенд ввода · синтетические данные</strong>
+      <div class="controls primary-controls">
+        <button @click="command({ kind: 'maximize' })">Развернуть / восстановить окно</button>
+        <button :disabled="state.busy" @click="command({ kind: 'suite' })">
+          Запустить native-проверки
+        </button>
+      </div>
+      <p>Native-проверки двигают курсор, меняют фокус и закрывают стенд автоматически.</p>
       <span
         :class="{ error: state.status.includes('failed') || state.status.includes('unconfirmed') }"
         >{{ state.status }}</span
@@ -198,14 +207,11 @@ function slotStyle(bounds: { x: number; y: number; width: number; height: number
         state.fixture.balances[target.id]
       }}</small>
     </div>
-    <aside>
+    <aside v-if="layout" :style="slotStyle(layout.details)">
       <p>
         Предмет v{{ state.fixture.item.version }} · {{ state.fixture.item.modifiers.join(", ") }}
       </p>
       <p>Валюта: {{ state.fixture.selected ?? "не выбрана" }}</p>
-      <button :disabled="state.busy" @click="command({ kind: 'suite' })">
-        Native-проверки: ввод, фокус, закрытие
-      </button>
       <small
         >Проверки двигают курсор, переключают окна и закрывают стенд. Запускай отдельно от ручных
         действий.</small
@@ -239,6 +245,13 @@ function slotStyle(bounds: { x: number; y: number; width: number; height: number
   overflow: hidden;
 }
 header {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 320px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-right: 1px solid #756448;
   padding: 12px 15px;
 }
 header strong {
@@ -247,9 +260,26 @@ header strong {
 }
 .controls {
   display: flex;
+  flex-wrap: wrap;
   gap: 7px;
   align-items: center;
   margin-top: 10px;
+}
+.primary-controls {
+  position: sticky;
+  top: -12px;
+  z-index: 2;
+  background: #171411;
+  padding: 10px 0;
+}
+label {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+}
+select {
+  max-width: 100%;
 }
 input {
   user-select: text;
@@ -309,9 +339,8 @@ p {
 }
 aside {
   position: absolute;
-  left: 51%;
-  right: 12px;
-  top: 470px;
+  overflow: auto;
+  box-sizing: border-box;
 }
 aside small {
   display: block;

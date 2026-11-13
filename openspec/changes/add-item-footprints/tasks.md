@@ -3,7 +3,7 @@
 ## 1. Catalog dimensions and compatibility
 
 - [x] 1.1 Add the typed, snapshot-pinned base dimension projection and public lookup; verify known sizes, absent/partial/non-integer/non-finite/zero/negative dimensions, unavailable IDs/snapshots and snapshot activation using focused decoder and file-backed tests; document the API and no-migration decision in the catalog guide and a footprint ADR.
-- [ ] 1.2 Expose a validated named dimension IPC operation and show dimensions/unknown reasons in base details; verify sender/subframe authorization, invalid payload rejection, bounded DTOs and preload exposure; inspect Plate Vest 2x3 and Driftwood Wand 1x3 from the existing accepted snapshot without reimport and record the result in current-state.
+- [x] 1.2 Expose a validated named dimension IPC operation and show dimensions/unknown reasons in base details; verify sender/subframe authorization, invalid payload rejection, bounded DTOs and preload exposure; inspect Plate Vest 2x3 and Driftwood Wand 1x3 from the existing accepted snapshot without reimport and record the result in current-state.
 
 ## 2. Inventory occupancy and projection
 

@@ -33,10 +33,14 @@ export function createTestbedHost(
     const native = createWin32Input();
     const target = new BrowserWindow({
       title: "PoE Autocraft — Input testbed",
-      width: 1080,
-      height: 800,
-      minWidth: 980,
-      minHeight: 720,
+      width: 1280,
+      height: 900,
+      minWidth: 900,
+      minHeight: 600,
+      resizable: true,
+      maximizable: true,
+      fullscreenable: true,
+      thickFrame: true,
       backgroundColor: "#171411",
       webPreferences: {
         preload: paths.preload,
@@ -99,6 +103,11 @@ export function createTestbedHost(
       if (suiteRunning && !["stop", "export"].includes(command.kind))
         throw new Error("native-suite-busy");
       switch (command.kind) {
+        case "maximize":
+          current.stop("geometry-changed");
+          if (target.isMaximized()) target.unmaximize();
+          else target.maximize();
+          break;
         case "placement":
           current.configure(command);
           break;

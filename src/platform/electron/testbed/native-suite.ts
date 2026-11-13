@@ -31,6 +31,8 @@ export async function runNativeSuite(
     hold = 80,
   ) => session.run({ targetId, button, shift, seed }, { holdMin: hold, holdMax: hold });
   try {
+    if (window.isFullScreen()) window.setFullScreen(false);
+    if (window.isMaximized()) window.unmaximize();
     session.reset(1);
     session.setFault("none");
     await focus();
@@ -130,7 +132,12 @@ export async function runNativeSuite(
       const event = data as { kind: string; down?: boolean };
       if (!injected && event.kind === "button" && event.down) {
         injected = true;
-        setTimeout(() => main.focus(), 40);
+        setTimeout(() => {
+          if (main.isMinimized()) main.restore();
+          main.show();
+          window.blur();
+          main.focus();
+        }, 40);
       }
     });
     const lost = await run("inventory-0", "primary", true, 4, 200);

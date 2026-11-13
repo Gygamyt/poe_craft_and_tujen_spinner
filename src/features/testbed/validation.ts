@@ -26,6 +26,7 @@ export const testbedCommandSchema = z.discriminatedUnion("kind", [
   z.strictObject({ kind: z.literal("stop") }),
   z.strictObject({ kind: z.literal("export") }),
   z.strictObject({ kind: z.literal("suite") }),
+  z.strictObject({ kind: z.literal("maximize") }),
 ]);
 export const observedEventSchema = z.strictObject({
   type: z.enum(["pointermove", "pointerdown", "pointerup", "keydown", "keyup"]),

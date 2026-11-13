@@ -56,6 +56,8 @@ The runner returns `delivered`, `rejected`, `stopped`, or `failed`; `delivered` 
 
 ## Multi-cell items
 
+Controls live in the scrollable left sidebar; rows wrap instead of clipping. Use **Развернуть / восстановить окно** or the native title-bar controls to maximize/restore. The fixture and trace areas resize separately from the controls. **Запустить native-проверки** is pinned near the top of the sidebar; the harness returns to a normal window for its resize checks and closes the testbed on successful completion. Leave the main panel open until instructed otherwise.
+
 The inventory background remains 12x5, but actionable targets are item instances rather than each empty cell. Select a synthetic 1x1, 1x3, 2x3 or 2x4 preset, enter a zero-based column/row and click **Разместить / остановить ввод**. The optional 2x2 obstacle occupies column 10, row 3. Out-of-bounds or overlapping edits report an error and retain the previous state. All covered cells belong to one item target; a currency action anywhere inside it consumes one unit and updates that item once. These fixtures work without a catalog.
 
 Changing placement stops pending motion, advances the fixture epoch and item placement revision, and invalidates old observations. Stop/reset/closing retain input cleanup. The General/Atlas/League source slots use their existing named regions. This is not a drag-and-drop inventory mover and does not interact with PoE.

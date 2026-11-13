@@ -32,6 +32,9 @@ vi.mock("electron", () => ({
     isDestroyed = () => false;
     show = vi.fn();
     focus = vi.fn();
+    isMaximized = vi.fn(() => false);
+    maximize = vi.fn();
+    unmaximize = vi.fn();
     removeMenu = vi.fn();
     loadFile = vi.fn();
     loadURL = vi.fn();
@@ -72,6 +75,16 @@ async function fixture() {
   const event = { sender: target.webContents, senderFrame: target.webContents.mainFrame };
   return { main, target, host, event, command: f.handlers.get(testbedChannels.command)! };
 }
+it("allows the owned window to maximize and restore through validated IPC", async () => {
+  const x = await fixture();
+  const command = f.handlers.get(testbedChannels.command)!;
+  await command(x.event, { kind: "maximize" });
+  expect(x.target.maximize).toHaveBeenCalledOnce();
+  vi.mocked(x.target.isMaximized).mockReturnValue(true);
+  await command(x.event, { kind: "maximize" });
+  expect(x.target.unmaximize).toHaveBeenCalledOnce();
+  x.host.dispose();
+});
 it("authorizes only the registered target main frame, without renderer HWND/path/coordinate escape hatches", async () => {
   const x = await fixture();
   await expect(
