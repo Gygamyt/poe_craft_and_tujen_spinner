@@ -1,6 +1,29 @@
 # Input testbed
 
-The feature is in progress. The native compatibility probe has passed in dev and build/start. It does not execute input into PoE or load/save calibration profiles.
+The native compatibility probe and the complete opt-in harness have passed in dev and build/start. The testbed does not execute input into PoE or load/save calibration profiles.
+
+## Interactive testbed
+
+Open **Стенд ввода** from the normal control panel. The independent local window contains a 12x5 inventory, General/Atlas/League stash pages, a single synthetic item, and 20 units per synthetic currency slot. Neutral reference slot IDs are retained; these are not verified real currency names or crafting outcomes.
+
+Choose a slot, then **Выбрать валюту · ПКМ**. **Применить · ЛКМ** applies exactly one fixture unit to inventory item 0. **Shift + ЛКМ** exercises modifier delivery without spending. Movement is seeded, curved, and deliberately visible. Keep the cursor inside the testbed client area before starting. Disabled or inactive-page targets are rejected.
+
+**Стоп / Escape**, loss of focus, bounds/display changes, reset, or closing the window stop pending input. Owned Shift/buttons are released. Closing the control panel also closes its testbed. Keep the windows open while manually examining outcomes; close them after finishing a manual session.
+
+Fault modes delay or omit fresh observation confirmation. A missing/delayed confirmation returns `unconfirmed-timeout`, without retrying. The fixture may already have changed: inspect its version and balance before explicitly requesting another action. Reset changes the fixture epoch; stale events cannot confirm a newer run. Traces include run/epoch, planned geometry/timing, native insertion counts, actual pointer/key events, observations and results, bounded to 500 entries. Export uses a main-owned save dialog; cancelling it writes nothing.
+
+The bridge contracts contain no runtime schema dependencies; Zod validation runs in the feature/main process, preserving sandboxed preload loading. All native handles, geometry, window registration and file paths belong to main. Only the registered testbed main frame can request testbed input.
+
+## Opt-in native regression harness
+
+```sh
+npm run test:native:dev
+# After closing the app and stopping Vite:
+npm run build
+npm run test:native:start
+```
+
+The harness opens the normal panel and testbed but does not move the pointer until **Native-проверки: ввод, фокус, закрытие** is pressed in the testbed. It runs bounded synthetic actions across all three pages, Shift, a delayed observation, focus loss, geometry invalidation, and closing the target while inputs are owned. It prints `INPUT_NATIVE_SUITE` with individual results. It deliberately switches focus and closes the testbed; leave the main panel open until the operator announces the next step, then close it. These native checks are outside `npm test`.
 
 ## Native compatibility probe
 

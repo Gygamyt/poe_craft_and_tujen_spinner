@@ -6,6 +6,7 @@ import {
 } from "../platform/electron/calibration/desktop";
 import { WorkspaceStore } from "../platform/electron/calibration/workspace-store";
 import { createWorkspace, displaySnapshotSchema, bundledLayout } from "../features/calibration";
+import { createTestbedHost } from "../platform/electron/testbed/desktop";
 
 async function createWindow(): Promise<void> {
   const display = screen.getPrimaryDisplay();
@@ -35,12 +36,20 @@ async function createWindow(): Promise<void> {
     loadError = error instanceof Error ? error.message : "Cannot load calibration data";
   }
   const desktop = createCalibrationDesktop(window, { workspace, storage, loadError });
-  window.on("closed", () => desktop.dispose());
+  const testbed = createTestbedHost(window, {
+    preload: join(__dirname, "../preload/index.js"),
+    renderer: join(__dirname, "../renderer/index.html"),
+  });
+  window.on("closed", () => {
+    desktop.dispose();
+    testbed.dispose();
+  });
   await loadView(desktop.overlay, "overlay");
   await loadView(desktop.previewControls, "preview-controls");
   await loadView(window, "main");
   window.show();
   window.focus();
+  if (process.argv.includes("--input-testbed-harness")) await testbed.open();
   if (process.env.ELECTRON_RENDERER_URL) {
     console.info("Control window ready", {
       visible: window.isVisible(),

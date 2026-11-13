@@ -7,6 +7,13 @@ import { acceptDesktopSnapshot } from "../domain/calibration-snapshot";
 
 const state = ref<DesktopState>();
 const error = ref("");
+async function openTestbed() {
+  try {
+    await window.testbed.open();
+  } catch (failure) {
+    error.value = String(failure);
+  }
+}
 const pending = ref(false);
 const page = ref<PageId>("general");
 const selectedDisplay = ref<number>();
@@ -53,6 +60,7 @@ onUnmounted(() => unsubscribe?.());
   <main>
     <header>
       <h1>PoE Autocraft</h1>
+      <button @click="openTestbed">Стенд ввода</button>
       <span>Калибровка</span>
     </header>
     <fieldset :disabled="!state || state.busy || pending">

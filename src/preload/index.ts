@@ -1,5 +1,10 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { probeChannels, type InputProbeApi } from "../features/testbed/contracts";
+import {
+  probeChannels,
+  testbedChannels,
+  type InputProbeApi,
+  type TestbedApi,
+} from "../features/testbed/contracts";
 import {
   desktopChannels,
   type CalibrationDesktopApi,
@@ -46,3 +51,16 @@ const probe: InputProbeApi = {
   },
 };
 contextBridge.exposeInMainWorld("inputProbe", probe);
+const testbed: TestbedApi = {
+  open: () => ipcRenderer.invoke(testbedChannels.open),
+  getState: () => ipcRenderer.invoke(testbedChannels.state),
+  command: (value) => ipcRenderer.invoke(testbedChannels.command, value),
+  observed: (value) => ipcRenderer.send(testbedChannels.observed, value),
+  onState(listener) {
+    const handler = (_event: Electron.IpcRendererEvent, state: Parameters<typeof listener>[0]) =>
+      listener(state);
+    ipcRenderer.on(testbedChannels.changed, handler);
+    return () => ipcRenderer.removeListener(testbedChannels.changed, handler);
+  },
+};
+contextBridge.exposeInMainWorld("testbed", testbed);

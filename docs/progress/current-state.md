@@ -2,7 +2,17 @@
 
 ## add-input-testbed — 2026-11-13
 
-Задачи 2.1–2.2: добавлены публичные контракты input, seeded Bezier-планировщик (550–850 ms по умолчанию), safe-inset цели, DIP/physical/virtual-desktop преобразования и serialized runner с отменой и owned-input cleanup. Профильный запуск — 34 теста (включая 6 probe guards), typecheck и lint прошли. Покрыты replay/100 разных seed, недопустимая геометрия и timing, signed origins/четыре масштаба, held input, concurrent run, отмена, потеря фокуса и cleanup failure. Подключение к рабочему testbed и native-проверка плавности ещё не выполнялись.
+Итог: реализация и native-приёмка завершены. Dev и build/start — INPUT_NATIVE_SUITE ok=true, по 16 проверок; в bounded trace осталось 232/233 полученных события соответственно. Пользователь подтвердил плавные движения в dev и успешный полный сценарий сборки. Оставшаяся тестовая панель остановлена; PoE не использовался. После замечания о выделении текста добавлен user-select:none на поверхности стенда с user-select:text у seed input; эта CSS-правка собрана, но отдельный визуальный повтор не выполнялся. Следующее изменение — каталог данных; TD-001 сохраняется без новых заявлений о DPI-покрытии.
+
+Задачи 2.3–3.3 выполнены: main регистрирует только собственный testbed HWND, ограничивает IPC его main frame, проверяет geometry/display token перед событиями. Публичные команды принимают ID ячеек, без произвольных HWND/координат/путей. Добавлены sandboxed-стенд, 12×5 inventory, 60/58/39 stash-слотов, независимые seed/epoch/version, остатки валюты, Shift, fault modes, Stop/Escape, bounded trace (500 записей) и экспорт через main-owned dialog. Калибровочное хранилище не используется стендом. `test:input` — 61 тест; весь набор — 189 тестов / 25 файлов. Typecheck, lint, format:check, strict OpenSpec и diff checks прошли.
+
+Native-набор проверяет три страницы с primary/secondary вводом, Shift observation/release, varied planned clicks, timeout без повторной траты, stale observation, focus-loss/geometry/close cancellation и освобождение owned input. Vite перед build/start на 5173 отсутствовал; production build успешен вне sandbox, только прежние Zod annotation warnings. 189 unit/integration-тестов, типизация, lint, форматирование и strict OpenSpec прошли; git diff проверен перед коммитом.
+
+При интеграции обнаружен runtime Zod import в sandboxed preload. Схемы выделены в отдельный validation-модуль, в контрактах моста остались только type imports; повторный dev-запуск и native-проверки успешны без отключения sandbox. Изменения архивных каталогов прежних changes находятся отдельно в рабочей копии и в коммиты input не включаются.
+
+### Ход реализации (история)
+
+Задачи 2.1–2.2: добавлены публичные контракты input, seeded Bezier-планировщик (550–850 ms по умолчанию), safe-inset цели, DIP/physical/virtual-desktop преобразования и serialized runner с отменой и owned-input cleanup. На этом шаге профильный запуск — 34 теста (включая 6 probe guards), typecheck и lint прошли. Покрыты replay/100 разных seed, недопустимая геометрия и timing, signed origins/четыре масштаба, held input, concurrent run, отмена, потеря фокуса и cleanup failure.
 
 Gate 1.1–1.2 успешно завершён. Dev и build/start вернули INPUT_PROBE ok=true: Electron 45.3.1, Node 24.22.2, Windows x64, Koffi 3.3.8, INPUT size=40/dataOffset=8. В обоих режимах ожидаемый центр (313,192) DIP, получены trusted pointerdown/up около (312.8,191.2) и click (312,191). Пользователь подтвердил видимое сообщение успеха в сборке. Vite перед build/start остановлен. 134 теста, typecheck, lint, format:check, strict OpenSpec и diff checks успешны; production build успешен вне sandbox. Это только проверка ABI/native delivery: плавность, runner и полный testbed ещё впереди.
 

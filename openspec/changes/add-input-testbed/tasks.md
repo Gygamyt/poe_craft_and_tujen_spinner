@@ -9,18 +9,18 @@
 
 - [x] 2.1 Implement public input contracts and seeded bounded motion planning; verify focused tests cover replay, varied inset targets, invalid timing, tiny/disabled cells, negative desktop origins, scale mapping, and path bounds; document units and planner-version semantics.
 - [x] 2.2 Implement the serialized runner and fake-driver tests; verify held-input rejection, cancellation at scheduled boundaries, cleanup, concurrent-request rejection, partial delivery, and no automatic retry pass; document result states and focus-check limitations.
-- [ ] 2.3 Wire named IPC and the Win32 driver with main-owned target registration and geometry tokens; verify sender/handle/coordinate rejection, target loss, bounds/scale invalidation, and owned-input cleanup in adapter tests.
+- [x] 2.3 Wire named IPC and the Win32 driver with main-owned target registration and geometry tokens; verify sender/handle/coordinate rejection, target loss, bounds/scale invalidation, and owned-input cleanup in adapter tests.
 
 ## 3. Testbed and observations
 
-- [ ] 3.1 Add the sandboxed local testbed window, inventory, and three stash pages with cloned fixture geometry; verify page/slot targeting, navigation restrictions, and that existing calibration data is unchanged; add testbed usage instructions and code-map entries.
-- [ ] 3.2 Implement seeded fixture reset, currency selection/application, Shift-click demonstration, versioned observations, and fault controls; verify deterministic outcomes, empty balances, missing items, delayed/missing/stale observations, reset epochs, and close-during-run tests.
-- [ ] 3.3 Add bounded traces, main-owned JSON export, Stop/Escape controls, and focused test commands; verify planned/delivered/received event correlation, sender permissions, export cancellation, and trace limits; document the synthetic-data boundary and stop procedure.
+- [x] 3.1 Add the sandboxed local testbed window, inventory, and three stash pages with cloned fixture geometry; verify page/slot targeting, navigation restrictions, and that existing calibration data is unchanged; add testbed usage instructions and code-map entries.
+- [x] 3.2 Implement seeded fixture reset, currency selection/application, Shift-click demonstration, versioned observations, and fault controls; verify deterministic outcomes, empty balances, missing items, delayed/missing/stale observations, reset epochs, and close-during-run tests.
+- [x] 3.3 Add bounded traces, main-owned JSON export, Stop/Escape controls, and focused test commands; verify planned/delivered/received event correlation, sender permissions, export cancellation, and trace limits; document the synthetic-data boundary and stop procedure.
 
 ## 4. Integration acceptance
 
-- [ ] 4.1 Add and run an explicit opt-in Windows native harness against only the owned testbed; verify primary/secondary clicks, varied safe positions, Shift release, focus-loss cancellation, target closure, and geometry invalidation from actual received OS events in dev and build/start. Announce pointer control and app lifecycle instructions; record unavailable checks honestly.
-- [ ] 4.2 Run focused and full tests, type checking, lint, format checking, build, strict OpenSpec validation, and git diff --check; update current-state.md with actual native evidence and limitations and commit verified owned paths.
+- [x] 4.1 Add and run an explicit opt-in Windows native harness against only the owned testbed; verify primary/secondary clicks, varied safe positions, Shift release, focus-loss cancellation, target closure, and geometry invalidation from actual received OS events in dev and build/start. Announce pointer control and app lifecycle instructions; record unavailable checks honestly.
+- [x] 4.2 Run focused and full tests, type checking, lint, format checking, build, strict OpenSpec validation, and git diff --check; update current-state.md with actual native evidence and limitations and commit verified owned paths.
 
 ## Workflow follow-up
 

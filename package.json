@@ -19,7 +19,10 @@
     "test:calibration": "vitest run tests/calibration",
     "test:crafting": "vitest run tests/crafting",
     "probe:dev": "electron-vite dev -- --input-probe",
-    "probe:start": "electron . --input-probe"
+    "probe:start": "electron . --input-probe",
+    "test:input": "vitest run tests/input tests/testbed",
+    "test:native:dev": "electron-vite dev -- --input-testbed-harness",
+    "test:native:start": "electron . --input-testbed-harness"
   },
   "dependencies": {
     "koffi": "3.3.8",
