@@ -12,9 +12,9 @@
 
 ## 3. Offline storage and lookup
 
-- [ ] 3.1 Implement schema-versioned SQLite storage and atomic snapshot activation; verify file-backed tests cover rollback, interruption before activation, first-import failure, foreign-key integrity, reopen, previous-snapshot selection, and preservation of existing calibration files.
-- [ ] 3.2 Implement bounded stable-ID and search queries with snapshot pinning; verify pagination, literal search escaping, class/domain/tag filters, missing-catalog/not-found distinctions, ordered weights, raw payload retention, and consistent results across activation; document the public query API and coverage limits.
-- [ ] 3.3 Add corruption/newer-schema handling without destructive reset and backup-before-migration policy; verify preserved files and actionable error results in recovery tests and document recovery procedures.
+- [x] 3.1 Implement schema-versioned SQLite storage and atomic snapshot activation; verify file-backed tests cover rollback, interruption before activation, first-import failure, foreign-key integrity, reopen, previous-snapshot selection, and preservation of existing calibration files.
+- [x] 3.2 Implement bounded stable-ID and search queries with snapshot pinning; verify pagination, literal search escaping, class/domain/tag filters, missing-catalog/not-found distinctions, ordered weights, raw payload retention, and consistent results across activation; document the public query API and coverage limits.
+- [x] 3.3 Add corruption/newer-schema handling without destructive reset and backup-before-migration policy; verify preserved files and actionable error results in recovery tests and document recovery procedures.
 
 ## 4. Catalog inspection
 

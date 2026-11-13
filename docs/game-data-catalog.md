@@ -35,6 +35,22 @@ These opt-in probes use a main-owned scratch directory, emit `CATALOG_RUNTIME_PR
 
 ## Source candidate
 
+## Storage, lookup and recovery
+
+The worker owns schema-1 SQLite storage. Snapshots and their records are immutable; a separate active pointer changes atomically with successful import. Failed imports roll back without changing the previous active snapshot. Explicit snapshot IDs keep readers pinned across later activation. Previous snapshots are retained; there is no automatic pruning.
+
+The public reader supports bounded literal text search, base class, domain and tag facts, pagination (1–100 results), stable-ID details and explicit activation. Modifier class/eligibility filtering is rejected rather than inferred. Search uses parameters and escapes literal `%`, `_` and backslash. Names in result lists are bounded; full original data remains in detail payloads (maximum 512 KiB per record). Ordered weight rows retain source ordinals and zero values. Unsupported/fallback details carry warnings.
+
+`catalog-unavailable`, `unsupported-snapshot`, `not-found`, `invalid-query`, `snapshot-conflict`, `unsupported-schema` and `catalog-corrupt` are distinct error states. Corrupt, incomplete, newer-version or unversioned nonempty databases are preserved; the application never resets them automatically. Schema 1 is the first version, so no migrations are currently shipped. **Backup-before-migration policy:** any future supported schema migration must first create a restorable database backup with the writer closed (including relevant SQLite sidecars), test restoration, then migrate atomically. Unsupported schemas remain blocked until that implementation exists. For manual recovery, first close the app and copy the existing database/sidecars; do not delete the only copy or alter its user_version to bypass checks.
+
+The real source-worker probe can be repeated without the inspector:
+
+```sh
+npm run catalog:probe-import -- tmp/catalog-bundle-v1 tmp/catalog-import-probe.sqlite
+```
+
+This diagnostic uses the explicitly named scratch database, never the app's calibration store. Initial local evidence: 3,773 ms import, 8 ms for two overview queries, 192,360,448-byte database; reopen retained the snapshot and Paua Amulet/mod/stat chain. These timings are observations, not performance guarantees. Application UI/user-data acceptance remains separate.
+
 ## Refresh and validate a pinned bundle
 
 ```sh

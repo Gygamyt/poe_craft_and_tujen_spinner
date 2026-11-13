@@ -1,7 +1,29 @@
+import type { CatalogManifest, CatalogQuery } from "./domain/bundle.ts";
+
 export interface CatalogStatus {
   available: boolean;
   activeSnapshotId?: string;
   snapshots: { id: string; game: "poe1"; patch: string | null; verified: boolean }[];
+  activeManifest?: CatalogManifest;
+}
+
+export interface CatalogQueryResult {
+  snapshotId: string;
+  total: number;
+  rows: { id: string; name: string; domain: string; itemClass?: string; requiredLevel?: number }[];
+}
+export interface CatalogDetail {
+  snapshotId: string;
+  kind: "base" | "mod";
+  record: Record<string, unknown>;
+  coverage: string[];
+  warnings: string[];
+}
+
+export interface CatalogReader {
+  query(query: CatalogQuery): Promise<CatalogQueryResult>;
+  detail(kind: "base" | "mod", id: string, snapshotId?: string): Promise<CatalogDetail>;
+  activate(snapshotId: string): Promise<CatalogStatus>;
 }
 
 /** Main-owned repository boundary. No SQL, filenames, or native handles cross it. */

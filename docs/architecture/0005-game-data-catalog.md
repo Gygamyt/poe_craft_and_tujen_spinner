@@ -28,6 +28,14 @@ The initial source contains 5,461 bases, 40,355 modifiers, 23,362 stats and 11,2
 
 ## Bundle boundary
 
+## SQLite snapshots and recovery
+
+Use composite snapshot/record keys with foreign keys for classes, tags, types, groups, base implicits, modifier stats/groups/tags/ordered weights, and resolved translation references. Payloads retain complete normalized/raw records. Missing legacy translation references remain in payload metadata without invented stat definitions. A single transaction inserts a snapshot and its relations, validates foreign keys, then switches the active pointer. Immutable prior snapshots remain available for explicitly pinned readers.
+
+The real worker probe imported the accepted 70,309,353-byte bundle into a 192,360,448-byte database, reopened it and resolved the Paua Amulet chain. The first local import took 3,773 ms; two overview queries took 8 ms. File-backed tests exercised genuine SQL-trigger failure, termination with an uncommitted transaction, first-import rollback, foreign-key enforcement, literal searches and snapshot conflict/selection.
+
+Schema 1 ships no upgrade path. Unknown nonempty version-0 files, newer versions and corrupt/incomplete files are blocked and preserved. Future supported migrations require a backup/restore step before changes, with a closed writer and sidecars retained, followed by atomic migration tests. This policy avoids speculative or destructive migration code before a previous supported schema exists. Opening unsupported files was verified byte-for-byte not to rewrite them.
+
 The bundle schema separates source provenance from normalized data checksums, retains ordered weights/raw records, and treats missing legacy translation stats as explicit unsupported references. Missing modifier stat/tag/group/type references remain fatal. Display fallback uses stable IDs for unnamed bases while preserving empty source names. Adapter ordering uses deterministic code-point key sorting.
 
 The developer CLI runs on Node 24's TypeScript stripping, with explicit `.ts` imports and no additional runtime dependency. Type checking includes tooling. Node's typeless-module advisory is retained rather than changing the package type and breaking Electron's CommonJS main output. The filesystem adapter validates real paths, byte limits, exact file lists and hashes before parsing/import; the network adapter uses immutable revisions, fixed paths, bounded streams, timeouts and verified cache entries.

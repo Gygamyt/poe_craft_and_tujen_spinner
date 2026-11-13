@@ -27,7 +27,8 @@
     "probe:catalog:dev": "electron-vite dev -- --catalog-runtime-probe",
     "probe:catalog:start": "electron . --catalog-runtime-probe",
     "catalog:refresh": "node tools/catalog/refresh.ts",
-    "catalog:validate": "node tools/catalog/validate.ts"
+    "catalog:validate": "node tools/catalog/validate.ts",
+    "catalog:probe-import": "node tools/catalog/import-probe.ts"
   },
   "dependencies": {
     "koffi": "3.3.8",
