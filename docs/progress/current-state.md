@@ -2,6 +2,8 @@
 
 ## add-input-testbed — 2026-11-13
 
+Задачи 2.1–2.2: добавлены публичные контракты input, seeded Bezier-планировщик (550–850 ms по умолчанию), safe-inset цели, DIP/physical/virtual-desktop преобразования и serialized runner с отменой и owned-input cleanup. Профильный запуск — 34 теста (включая 6 probe guards), typecheck и lint прошли. Покрыты replay/100 разных seed, недопустимая геометрия и timing, signed origins/четыре масштаба, held input, concurrent run, отмена, потеря фокуса и cleanup failure. Подключение к рабочему testbed и native-проверка плавности ещё не выполнялись.
+
 Gate 1.1–1.2 успешно завершён. Dev и build/start вернули INPUT_PROBE ok=true: Electron 45.3.1, Node 24.22.2, Windows x64, Koffi 3.3.8, INPUT size=40/dataOffset=8. В обоих режимах ожидаемый центр (313,192) DIP, получены trusted pointerdown/up около (312.8,191.2) и click (312,191). Пользователь подтвердил видимое сообщение успеха в сборке. Vite перед build/start остановлен. 134 теста, typecheck, lint, format:check, strict OpenSpec и diff checks успешны; production build успешен вне sandbox. Это только проверка ABI/native delivery: плавность, runner и полный testbed ещё впереди.
 
 Ход gate: установлен Koffi 3.3.8, добавлен opt-in probe с отдельным sandboxed-окном и main-owned HWND. Первый автоматический запуск остановлен проверкой foreground до отправки событий; запуск переведён на явную кнопку Start.

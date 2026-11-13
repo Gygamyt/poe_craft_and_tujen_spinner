@@ -7,8 +7,8 @@
 
 ## 2. Motion and action execution
 
-- [ ] 2.1 Implement public input contracts and seeded bounded motion planning; verify focused tests cover replay, varied inset targets, invalid timing, tiny/disabled cells, negative desktop origins, scale mapping, and path bounds; document units and planner-version semantics.
-- [ ] 2.2 Implement the serialized runner and fake-driver tests; verify held-input rejection, cancellation at scheduled boundaries, cleanup, concurrent-request rejection, partial delivery, and no automatic retry pass; document result states and focus-check limitations.
+- [x] 2.1 Implement public input contracts and seeded bounded motion planning; verify focused tests cover replay, varied inset targets, invalid timing, tiny/disabled cells, negative desktop origins, scale mapping, and path bounds; document units and planner-version semantics.
+- [x] 2.2 Implement the serialized runner and fake-driver tests; verify held-input rejection, cancellation at scheduled boundaries, cleanup, concurrent-request rejection, partial delivery, and no automatic retry pass; document result states and focus-check limitations.
 - [ ] 2.3 Wire named IPC and the Win32 driver with main-owned target registration and geometry tokens; verify sender/handle/coordinate rejection, target loss, bounds/scale invalidation, and owned-input cleanup in adapter tests.
 
 ## 3. Testbed and observations
