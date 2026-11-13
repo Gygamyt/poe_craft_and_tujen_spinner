@@ -26,6 +26,12 @@ The initial source contains 5,461 bases, 40,355 modifiers, 23,362 stats and 11,2
 
 ## Alternatives and boundaries
 
+## Bundle boundary
+
+The bundle schema separates source provenance from normalized data checksums, retains ordered weights/raw records, and treats missing legacy translation stats as explicit unsupported references. Missing modifier stat/tag/group/type references remain fatal. Display fallback uses stable IDs for unnamed bases while preserving empty source names. Adapter ordering uses deterministic code-point key sorting.
+
+The developer CLI runs on Node 24's TypeScript stripping, with explicit `.ts` imports and no additional runtime dependency. Type checking includes tooling. Node's typeless-module advisory is retained rather than changing the package type and breaking Electron's CommonJS main output. The filesystem adapter validates real paths, byte limits, exact file lists and hashes before parsing/import; the network adapter uses immutable revisions, fixed paths, bounded streams, timeouts and verified cache entries.
+
 - External SQLite bindings are unnecessary while the Electron-bundled API passes its required gates.
 - JSON remains appropriate for immutable source bundles and small test fixtures; the calibration settings retain their existing JSON recovery flow.
 - Worker diagnostic success does not establish real-game data compatibility or eligibility rules. No downstream importer, UI, market-price feed or first recipe is implemented in this step.

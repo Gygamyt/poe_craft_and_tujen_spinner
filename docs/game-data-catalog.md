@@ -35,4 +35,19 @@ These opt-in probes use a main-owned scratch directory, emit `CATALOG_RUNTIME_PR
 
 ## Source candidate
 
+## Refresh and validate a pinned bundle
+
+```sh
+npm run catalog:refresh -- --revision 3ac25f0277a23296b5799e5eaa911dd46f68e6e0 --cache tmp/game-data-source --output tmp/catalog-bundle-v1
+npm run catalog:validate -- tmp/catalog-bundle-v1
+```
+
+The output directory must be empty. The CLI downloads only fixed paths from an immutable 40-character revision, computes SHA-256 checksums, reuses verified cache entries, and fails on changed cache content, size limits, timeouts or HTTP errors. It does not retry spending or poll upstream. In Windows PowerShell use `npm.cmd` if npm argument forwarding differs.
+
+A bundle contains only `manifest.json` and `records.json`. The manifest pins the game, declared patch, language, source revisions/notices/file hashes, retrieval time, coverage and the exact records checksum/length. Import validates filenames and resolved paths before reading; it rejects extra files, traversal, unsupported game/schema, invalid ranges, duplicate IDs and missing required references.
+
+Canonical records retain source IDs, raw payloads, modifier groups and ordered weights including zeros. Unknown legacy translation stat references are listed in `missingStatIds`; they are not fabricated as stat definitions. Unnamed bases use their stable ID for display while retaining the original empty name. No recipe eligibility or probability is inferred.
+
+The first real bundle is `poe1-3ac25f0277a2-c1e2111ca4bf`, 70,309,353 bytes, with 5,461 bases and 40,355 modifiers; 14 translation groups carry unsupported legacy references. It has passed normalization and local checksum/reference validation, but database/UI import acceptance is still pending. Full snapshots remain ignored local files. Node 24 runs the tooling through native TypeScript stripping; the advisory about typeless ES modules does not affect the Electron CommonJS output.
+
 [Source metadata](reference/game-data-source-candidate.json) identifies the accepted initial PoE 1 export revision, declared patch, downloaded-file SHA-256 hashes and a verified base/mod/stat/English-translation chain. It is not a normalized import bundle. Git blob IDs and downloaded-file checksums are recorded separately. League compatibility and crafting eligibility/probabilities are not inferred from source acceptance.

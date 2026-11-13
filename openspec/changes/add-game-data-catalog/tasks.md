@@ -7,8 +7,8 @@
 
 ## 2. Bundles and reproducible refresh
 
-- [ ] 2.1 Define manifest, canonical record, coverage, and query schemas with small synthetic bundles; verify unsupported game/schema, duplicate IDs, invalid ranges, unknown patch metadata, ordered zero weights, translation fallbacks, and broken cross-references in focused tests.
-- [ ] 2.2 Implement bounded pinned-source fetch and normalization tooling plus local bundle validation; verify hashes, immutable revision selection, timeout/failure handling, path traversal rejection, file limits, and deterministic normalization using local HTTP fixtures; document exact refresh/build/import commands and attribution.
+- [x] 2.1 Define manifest, canonical record, coverage, and query schemas with small synthetic bundles; verify unsupported game/schema, duplicate IDs, invalid ranges, unknown patch metadata, ordered zero weights, translation fallbacks, and broken cross-references in focused tests.
+- [x] 2.2 Implement bounded pinned-source fetch and normalization tooling plus local bundle validation; verify hashes, immutable revision selection, timeout/failure handling, path traversal rejection, file limits, and deterministic normalization using local HTTP fixtures; document exact refresh/build/import commands and attribution.
 
 ## 3. Offline storage and lookup
 
