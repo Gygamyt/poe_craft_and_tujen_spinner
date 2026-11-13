@@ -14,11 +14,11 @@
 
 - [x] 3.1 Add synthetic footprint presets, anchor controls, an overlap obstacle and one item surface spanning occupied cells through main-owned validated commands; verify invalid edits preserve state, non-anchor cells resolve to the same instance, seeded replay, single currency consumption/version updates and unchanged named currency targets across General/Atlas/League; update the testbed guide.
 - [x] 3.2 Integrate placement revisions with session/runner cancellation and fresh observations; verify pending runs stop on reconfiguration, old observations cannot confirm a new placement, owned input is released, and existing reset/focus/geometry/close behavior remains covered without calibration writes.
-- [ ] 3.3 Extend the owned-window native harness and run dev plus fresh build/start acceptance with PoE closed; verify a received native click in a non-anchor cell of a multi-cell item, exactly one currency consumption/item update, stale-placement rejection and the existing three-page regression checks; record actual results and explicit open/close instructions in current-state.
+- [x] 3.3 Extend the owned-window native harness and run dev plus fresh build/start acceptance with PoE closed; verify a received native click in a non-anchor cell of a multi-cell item, exactly one currency consumption/item update, stale-placement rejection and the existing three-page regression checks; record actual results and explicit open/close instructions in current-state.
 
 ## 4. Integration acceptance
 
-- [ ] 4.1 Run focused inventory/catalog/testbed checks, full tests, typecheck, lint, format check, production build, strict OpenSpec validation and diff checks; confirm existing catalog/calibration files need no migration, document verification limits and unchanged DPI debt, and commit only verified task-owned paths.
+- [x] 4.1 Run focused inventory/catalog/testbed checks, full tests, typecheck, lint, format check, production build, strict OpenSpec validation and diff checks; confirm existing catalog/calibration files need no migration, document verification limits and unchanged DPI debt, and commit only verified task-owned paths.
 
 ## Workflow follow-up
 

@@ -1,5 +1,17 @@
 # Текущее состояние PoE Autocraft
 
+## add-item-footprints — final acceptance, 2026-11-13
+
+The user confirmed the final native scenario in a fresh build/start instance with Vite stopped, after confirming the corrected dev UI and existing catalog dimensions. The build process exited normally after the instructed window closure. The final build console trace was not retained in the tool response; its manual acceptance is user-confirmed, while the retained dev trace provides the explicit 21/21 checks and trusted multi-cell received-event evidence. No build event count is inferred.
+
+Completed behavior: source-backed typed dimensions without reimport/migration; rectangular inventory occupancy and item-wide targets; bounded inset clicks; overlap/boundary checks; stale placement cancellation and owned-input cleanup; synthetic multi-cell fixtures; scrollable controls and resize/maximize support. Verification: 279 tests / 36 files, typecheck, lint, format check, production build, strict OpenSpec and diff checks passed. The catalog/SQLite schema remains version 1 and calibration JSON is unchanged. TD-001 physical DPI debt remains open; no actual PoE input, item recognition, inventory movement or recipe execution was added. Earlier failed native attempts remain documented below and are not counted as accepted runs.
+
+## add-item-footprints — dev acceptance, 2026-11-13
+
+The user confirmed the corrected dev UI/native run. The final dev trace reports `INPUT_NATIVE_SUITE ok=true`, 21/21 checks and 231 received events under Electron 45.3.1 / Node 24.22.2. It includes a trusted native pointer-up in a non-anchor cell of the 2x3 item (1000,180 client coordinates), single consumption/version increment, stale-placement cancellation, three stash pages, Shift release, observation timeout, focus/geometry/close cancellation and owned-input cleanup. An earlier attempt in that instance stopped at Atlas secondary; it is not counted as acceptance. The subsequent full run passed.
+
+Dev was stopped, a fresh production build completed and port 5173 was checked absent before build/start. The built native harness is now open for final acceptance; tasks 3.3 and 4.1 remain pending that result. No further code changes or repeated broad checks are needed unless that check fails. Physical DPI debt remains TD-001.
+
 ## add-item-footprints — implementation started, 2026-11-13
 
 Layout correction verification: 279 tests / 36 files, typecheck, lint, formatting, production build, strict change validation and diff checks pass. Geometry tests cover 900x560 through 3440x1440 client viewports and check target/detail bounds clear the sidebar and each other. Maximize/restore IPC is tested. The corrected dev instance is open; visual/native acceptance remains pending and task 3.3 stays unchecked.
