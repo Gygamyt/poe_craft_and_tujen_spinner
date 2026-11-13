@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
+import type { BaseDimensions } from "../index";
+const dimensions = ref<BaseDimensions>();
 import type { CatalogStatus, CatalogQueryResult, CatalogDetail } from "../contracts";
 const status = ref<CatalogStatus>();
 const results = ref<CatalogQueryResult>();
@@ -32,6 +34,7 @@ function accept(value: CatalogStatus) {
   status.value = value;
   snapshot.value = value.activeSnapshotId ?? "";
   results.value = undefined;
+  dimensions.value = undefined;
   detail.value = undefined;
   offset.value = 0;
 }
@@ -61,11 +64,15 @@ function search(start = 0) {
     resultKind.value = selectedKind;
     offset.value = start;
     detail.value = undefined;
+    dimensions.value = undefined;
   });
 }
 function inspect(selectedKind: "base" | "mod", id: string) {
   return run(async () => {
     detail.value = await api.detail(selectedKind, id, results.value?.snapshotId ?? snapshot.value);
+    dimensions.value = undefined;
+    if (selectedKind === "base")
+      dimensions.value = await api.dimensions(id, detail.value.snapshotId);
   });
 }
 onMounted(refresh);
@@ -144,6 +151,13 @@ onMounted(refresh);
       </section>
       <section v-if="detail">
         <h2>{{ detail.kind }} · {{ detail.record.id }}</h2>
+        <p v-if="dimensions">
+          Размер в инвентаре:
+          <span v-if="dimensions.status === 'known'"
+            >{{ dimensions.width }} × {{ dimensions.height }} ячеек</span
+          >
+          <span v-else>{{ dimensions.status }} — {{ dimensions.reason }}</span>
+        </p>
         <p v-for="warning in detail.warnings" :key="warning" role="status">{{ warning }}</p>
         <p v-for="coverage in detail.coverage" :key="coverage">{{ coverage }}</p>
         <template v-if="detail.kind === 'base'">

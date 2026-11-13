@@ -37,6 +37,8 @@ These opt-in probes use a main-owned scratch directory, emit `CATALOG_RUNTIME_PR
 
 ## Desktop inspector
 
+Base details expose inventory cell dimensions through `dimensions(baseId, snapshotId?)`. The result carries the resolved snapshot ID and either known positive integer width/height or an explicit unknown/invalid reason. Existing snapshots are read from retained raw fields without reimport or migration. A consumer should hold the returned snapshot ID for subsequent lookups. Dimensions do not establish an item's inventory position.
+
 Run the application and open **Каталог данных**. Select **Импорт папки bundle**, then the bundle directory (not an individual file). Cancellation leaves the active snapshot unchanged. The UI shows import duration, snapshot IDs, patch verification, unknown league applicability, source revisions/hashes and coverage. Storage errors are displayed without resetting the database.
 
 Search **Базы** or **Модификаторы** by literal name/stable ID; class (bases only), domain and tag filters use exact source identifiers. Results are paginated in groups of 30. Select a result to inspect raw facts and warnings; base implicit links open the corresponding modifier in the same snapshot. The snapshot selector changes the active snapshot only after **Активировать**. Close the main panel to close the inspector and worker. Calibration remains independently stored.

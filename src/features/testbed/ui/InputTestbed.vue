@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import type { ObservedEvent, TestbedCommand, TestbedState } from "../contracts";
+import { fixtureInventoryArea, footprintPresets } from "../domain/fixture";
+import { inventoryCells } from "../../calibration";
+const preset = ref<keyof typeof footprintPresets>("1x1");
+const column = ref(0),
+  row = ref(0),
+  obstacle = ref(false);
 
 const state = ref<TestbedState>();
 const error = ref("");
@@ -11,6 +17,21 @@ const currencies = computed(
   () => state.value?.targets.filter((target) => target.kind === "currency") ?? [],
 );
 const recent = computed(() => state.value?.trace.slice(-6).reverse() ?? []);
+const cells = computed(() =>
+  state.value ? inventoryCells(fixtureInventoryArea(state.value.viewport)) : [],
+);
+function accept(value: TestbedState) {
+  if (state.value?.fixture.epoch !== value.fixture.epoch) {
+    const placement = value.fixture.item.placement;
+    preset.value = `${placement.width}x${placement.height}` as keyof typeof footprintPresets;
+    column.value = placement.column;
+    row.value = placement.row;
+    obstacle.value = value.fixture.obstacle;
+  }
+  state.value = value;
+  if (!value.targets.some((target) => target.id === selected.value))
+    selected.value = value.targets.find((target) => target.kind === "currency")?.id ?? "";
+}
 async function command(value: TestbedCommand) {
   error.value = "";
   try {
@@ -43,12 +64,8 @@ function receive(event: Event) {
 }
 const types = ["pointermove", "pointerdown", "pointerup", "keydown", "keyup"];
 onMounted(async () => {
-  unsubscribe = window.testbed.onState((value) => {
-    state.value = value;
-    if (!value.targets.some((target) => target.id === selected.value))
-      selected.value = value.targets.find((target) => target.kind === "currency")?.id ?? "";
-  });
-  state.value = await window.testbed.getState();
+  unsubscribe = window.testbed.onState(accept);
+  accept(await window.testbed.getState());
   for (const type of types) window.addEventListener(type, receive);
 });
 onUnmounted(() => {
@@ -138,11 +155,35 @@ function slotStyle(bounds: { x: number; y: number; width: number; height: number
           Shift + ЛКМ
         </button>
       </div>
+      <div class="controls">
+        <label
+          >Предмет
+          <select v-model="preset">
+            <option v-for="(_, key) in footprintPresets" :key="key" :value="key">{{ key }}</option>
+          </select></label
+        >
+        <label
+          >Колонка (0–11) <input v-model.number="column" type="number" min="0" max="11"
+        /></label>
+        <label>Строка (0–4) <input v-model.number="row" type="number" min="0" max="4" /></label>
+        <label><input v-model="obstacle" type="checkbox" />Препятствие (10,3), 2×2</label>
+        <button @click="command({ kind: 'placement', preset, column, row, obstacle })">
+          Разместить / остановить ввод
+        </button>
+      </div>
       <p>
         Настройки игры не используются. Держи курсор внутри окна; смена фокуса останавливает ввод.
       </p>
       <p class="error">{{ error }}</p>
     </header>
+    <div
+      v-for="(cell, index) in cells"
+      :key="`cell-${index}`"
+      class="inventory-cell"
+      :style="slotStyle(cell)"
+    >
+      {{ index + 1 }}
+    </div>
     <div
       v-for="target in state.targets"
       :key="target.id"
@@ -176,6 +217,18 @@ function slotStyle(bounds: { x: number; y: number; width: number; height: number
 </template>
 
 <style scoped>
+.inventory-cell {
+  position: absolute;
+  box-sizing: border-box;
+  border: 1px solid #444;
+  color: #777;
+  font-size: 10px;
+  pointer-events: none;
+}
+.inventory {
+  z-index: 1;
+  box-sizing: border-box;
+}
 .testbed {
   user-select: none;
   position: fixed;
@@ -201,6 +254,9 @@ header strong {
 input {
   user-select: text;
   width: 85px;
+}
+input[type="checkbox"] {
+  width: auto;
 }
 button,
 select,

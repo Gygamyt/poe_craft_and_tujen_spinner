@@ -94,7 +94,7 @@ it("authorizes only the registered target main frame, without renderer HWND/path
     }),
   ).rejects.toThrow();
   const state = f.handlers.get(testbedChannels.state)!(x.event) as { targets: unknown[] };
-  expect(state.targets).toHaveLength(120);
+  expect(state.targets).toHaveLength(61);
   x.host.dispose();
 });
 it("cancels an export without writing and writes only the main-owned chosen path", async () => {

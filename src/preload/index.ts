@@ -1,6 +1,8 @@
 import { contextBridge, ipcRenderer } from "electron";
 import { catalogChannels, type CatalogDesktopApi } from "../features/game-data/contracts";
 const catalog: CatalogDesktopApi = {
+  dimensions: (baseId, snapshotId) =>
+    ipcRenderer.invoke(catalogChannels.dimensions, { baseId, snapshotId }),
   open: () => ipcRenderer.invoke(catalogChannels.open),
   status: () => ipcRenderer.invoke(catalogChannels.status),
   query: (query) => ipcRenderer.invoke(catalogChannels.query, query),

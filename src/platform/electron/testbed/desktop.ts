@@ -99,6 +99,9 @@ export function createTestbedHost(
       if (suiteRunning && !["stop", "export"].includes(command.kind))
         throw new Error("native-suite-busy");
       switch (command.kind) {
+        case "placement":
+          current.configure(command);
+          break;
         case "run":
           await current.run(command);
           break;

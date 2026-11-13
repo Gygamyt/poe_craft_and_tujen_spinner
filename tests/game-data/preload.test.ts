@@ -17,8 +17,14 @@ it("exposes named catalog DTO operations without SQL, paths or generic IPC", asy
     ([name]) => name === "catalog",
   )![1] as CatalogDesktopApi;
   expect(Object.keys(api).sort()).toEqual(
-    ["open", "status", "query", "detail", "activate", "chooseImport"].sort(),
+    ["open", "status", "query", "detail", "dimensions", "activate", "chooseImport"].sort(),
   );
+  await api.chooseImport();
+  await api.dimensions("base-id", "snapshot-id");
+  expect(bridge.invoke).toHaveBeenLastCalledWith(catalogChannels.dimensions, {
+    baseId: "base-id",
+    snapshotId: "snapshot-id",
+  });
   await api.chooseImport();
   expect(bridge.invoke).toHaveBeenLastCalledWith(catalogChannels.import);
   await api.detail("mod", "modifier-id", "snapshot-id");

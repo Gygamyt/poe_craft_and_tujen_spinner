@@ -2,6 +2,13 @@ import { z } from "zod";
 const seed = z.int().min(0).max(0xffffffff);
 export const testbedCommandSchema = z.discriminatedUnion("kind", [
   z.strictObject({
+    kind: z.literal("placement"),
+    preset: z.enum(["1x1", "1x3", "2x3", "2x4"]),
+    column: z.int().min(0).max(11),
+    row: z.int().min(0).max(4),
+    obstacle: z.boolean(),
+  }),
+  z.strictObject({
     kind: z.literal("run"),
     targetId: z.string().max(100),
     button: z.enum(["primary", "secondary"]),

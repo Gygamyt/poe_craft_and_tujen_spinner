@@ -53,3 +53,9 @@ Isolated guard checks: `npm test -- tests/input/native-probe.test.ts`. They use 
 The planner uses Mulberry32 seeds (including zero), cubic Bezier curves with eased progress, and inset-safe click targets. Default movement is 550–850 ms, holding a button 45–100 ms, 36 intervals, and a 4 DIP target inset. Custom settings are bounded and validated; identical inputs/seed/settings reproduce planned positions and timings. OS scheduling can differ. Geometry snapshots and planner version are part of reproducible trace context.
 
 The runner returns `delivered`, `rejected`, `stopped`, or `failed`; `delivered` means input delivery only, never a confirmed item change. It runs one action at a time, checks the target before each event, rejects pre-held input, and cleans up only the Shift/button it owns. Cancellation discards pending events; partial injection is not retried. Cleanup failures are reported explicitly because release cannot be guaranteed if the OS refuses it. A focus check cannot eliminate the race between checking and injecting an OS event.
+
+## Multi-cell items
+
+The inventory background remains 12x5, but actionable targets are item instances rather than each empty cell. Select a synthetic 1x1, 1x3, 2x3 or 2x4 preset, enter a zero-based column/row and click **Разместить / остановить ввод**. The optional 2x2 obstacle occupies column 10, row 3. Out-of-bounds or overlapping edits report an error and retain the previous state. All covered cells belong to one item target; a currency action anywhere inside it consumes one unit and updates that item once. These fixtures work without a catalog.
+
+Changing placement stops pending motion, advances the fixture epoch and item placement revision, and invalidates old observations. Stop/reset/closing retain input cleanup. The General/Atlas/League source slots use their existing named regions. This is not a drag-and-drop inventory mover and does not interact with PoE.

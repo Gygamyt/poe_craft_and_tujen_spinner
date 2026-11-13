@@ -1,4 +1,5 @@
 import type { Worker } from "node:worker_threads";
+import { decodeBaseDimensions } from "../../features/game-data/index.ts";
 import type {
   CatalogRepository,
   CatalogReader,
@@ -108,6 +109,10 @@ export class SqliteRuntimeClient implements CatalogRepository, CatalogReader {
   }
   async activate(snapshotId: string): Promise<CatalogStatus> {
     return (await this.request("activate", undefined, { snapshotId })) as CatalogStatus;
+  }
+  async dimensions(baseId: string, snapshotId?: string) {
+    const detail = await this.detail("base", baseId, snapshotId);
+    return decodeBaseDimensions(String(detail.record.id), detail.snapshotId, detail.record.raw);
   }
   async close(): Promise<void> {
     if (this.closing) return this.closing;

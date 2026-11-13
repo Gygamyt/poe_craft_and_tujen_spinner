@@ -96,6 +96,13 @@ export function createCatalogHost(
     const id = identifier.parse(value);
     return (await repository()).activate(id);
   });
+  ipcMain.handle(catalogChannels.dimensions, async (event, value: unknown) => {
+    authorize(event);
+    const query = z
+      .strictObject({ baseId: identifier, snapshotId: identifier.optional() })
+      .parse(value);
+    return (await repository()).dimensions(query.baseId, query.snapshotId);
+  });
   ipcMain.handle(catalogChannels.import, async (event, ...args: unknown[]) => {
     authorize(event);
     if (args.length) throw new Error("Import does not accept renderer paths");

@@ -1,5 +1,11 @@
 # Текущее состояние PoE Autocraft
 
+## add-item-footprints — implementation started, 2026-11-13
+
+Tasks 2.1–3.2 completed: pure inventory occupancy/projection, half-open hit testing, instance context, four standalone synthetic presets, anchored placement and an overlap obstacle are implemented. Invalid edits preserve prior state. Cancellation marks pending actions inactive before cleanup, preventing cleanup button-up from applying currency; tests cover cancellation during motion and with owned button/Shift held, plus delayed old observations. Native harness extensions are implemented but await actual desktop acceptance. Full checks pass 273 tests / 35 files; typecheck, lint, formatting, production build and strict OpenSpec pass. Native/DPI claims are unchanged until real runs complete.
+
+Task 1.1 completed: typed source dimension decoding and snapshot-pinned public lookup read existing raw base payloads without migration/reimport or a guessed 1x1 default. Focused catalog checks passed 56 tests, including real-worker reads of legacy payloads, unavailable IDs/snapshots and activation pinning. ADR-0006 and the catalog API guide record the compatibility decision. Named IPC and inspector dimensions are implemented; task 1.2 awaits actual desktop inspection of the existing accepted snapshot. Placement/testbed tasks remain in progress; no native acceptance is claimed yet.
+
 ## add-game-data-catalog — final acceptance, 2026-11-13
 
 The user confirmed built-app import, provenance, Paua Amulet → ManaRegenerationImplicitAmulet1 → mana_regeneration_rate_+% (20–30), followed by lookup after a normal close/restart without reimport and retained calibration. Accepted snapshot: `poe1-3ac25f0277a2-c1e2111ca4bf`, declared patch 3.29.3.6. Desktop import took 3,240 ms for 70,309,353 bytes of records; separate source-worker measurements were 3,773 ms import, 8 ms/two overview queries and 192,360,448 database bytes. Query responsiveness was accepted interactively, without claiming a UI latency benchmark.

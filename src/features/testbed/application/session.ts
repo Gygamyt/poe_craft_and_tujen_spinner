@@ -5,7 +5,14 @@ import {
   type MotionSettings,
   type Point,
 } from "../../input";
-import { createFixture, fixtureTargets, applyFixtureAction } from "../domain/fixture";
+import {
+  createFixture,
+  fixtureTargets,
+  applyFixtureAction,
+  configureFixture,
+  type FixturePlacement,
+} from "../domain/fixture";
+import { assertItemContext, type ItemContext } from "../../inventory";
 import type { ObservedEvent, TestbedState, TraceEntry } from "../contracts";
 
 export interface TestbedEnvironment {
@@ -17,6 +24,7 @@ export interface TestbedEnvironment {
   publish(state: TestbedState): void;
 }
 interface Pending {
+  context: ItemContext;
   runId: number;
   epoch: number;
   sequence: number;
@@ -24,6 +32,7 @@ interface Pending {
   button: "primary" | "secondary";
   shift: boolean;
   applied: boolean;
+  cancelled: boolean;
   finish(result: string): void;
 }
 
@@ -37,9 +46,16 @@ export class TestbedSession {
   private status = "Ready — synthetic fixture";
   private fault: TestbedState["fault"] = "none";
   private timers = new Set<() => void>();
+  private runContext?: ItemContext;
 
   constructor(private readonly env: TestbedEnvironment) {
-    this.runner = new InputRunner(env.driver);
+    this.runner = new InputRunner({
+      ...env.driver,
+      assertTarget: (token) => {
+        env.driver.assertTarget(token);
+        if (this.runContext) assertItemContext(this.runContext, this.fixture.item.placement);
+      },
+    });
   }
   snapshot(): TestbedState {
     return structuredClone({
@@ -61,6 +77,7 @@ export class TestbedSession {
     if (this.trace.length > 500) this.trace.splice(0, this.trace.length - 500);
   }
   stop(reason = "stopped") {
+    if (this.pending) this.pending.cancelled = true;
     this.runner.cancel();
     this.pending?.finish(reason);
   }
@@ -73,6 +90,13 @@ export class TestbedSession {
     this.stop("reset");
     this.fixture = createFixture(seed, this.fixture.epoch + 1);
     this.status = "Reset — synthetic fixture";
+    this.publish();
+  }
+  configure(value: FixturePlacement) {
+    const next = configureFixture(this.fixture, value);
+    this.stop("placement-changed");
+    this.fixture = next;
+    this.status = "Placement changed — synthetic fixture";
     this.publish();
   }
   page(page: "general" | "atlas" | "league") {
@@ -103,6 +127,7 @@ export class TestbedSession {
     if (
       !pending ||
       pending.applied ||
+      pending.cancelled ||
       event.type !== "pointerup" ||
       !event.trusted ||
       event.runId !== pending.runId ||
@@ -112,6 +137,12 @@ export class TestbedSession {
       event.shift !== pending.shift
     ) {
       this.publish();
+      return;
+    }
+    try {
+      assertItemContext(pending.context, this.fixture.item.placement);
+    } catch {
+      pending.finish("stale-item-placement");
       return;
     }
     const target = fixtureTargets(this.fixture, this.env.viewport()).find(
@@ -190,11 +221,13 @@ export class TestbedSession {
       resolveObservation = resolve;
     });
     const pending: Pending = {
+      context: structuredClone(this.fixture.item.placement),
       ...request,
       runId: id,
       epoch: this.fixture.epoch,
       sequence: this.fixture.sequence,
       applied: false,
+      cancelled: false,
       finish(value) {
         if (!acknowledged) {
           acknowledged = true;
@@ -204,10 +237,16 @@ export class TestbedSession {
     };
     this.pending = pending;
     this.status = "Moving…";
-    this.record("planned", { ...request, plan, token: context.token });
+    this.record("planned", {
+      ...request,
+      plan,
+      token: context.token,
+      itemContext: pending.context,
+    });
     this.publish();
     let cancelDeadline = () => {};
     try {
+      this.runContext = pending.context;
       const delivery = await this.runner.run({
         plan,
         token: context.token,
@@ -225,6 +264,7 @@ export class TestbedSession {
       this.record("result", this.status);
       return { status: this.status, runId: id };
     } finally {
+      this.runContext = undefined;
       cancelDeadline();
       this.pending = undefined;
       this.activeRun = 0;

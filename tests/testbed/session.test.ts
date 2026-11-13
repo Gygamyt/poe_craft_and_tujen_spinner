@@ -76,6 +76,69 @@ it("confirms one fresh action and changes the synthetic item once", async () => 
   expect(f.session.snapshot().fixture.balances["general/slot-001"]).toBe(19);
   expect(f.held()).toBe(false);
 });
+it("confirms one item action away from the anchor of a multi-cell rectangle", async () => {
+  const f = fixture();
+  f.session.configure({ preset: "2x3", column: 4, row: 1, obstacle: true });
+  await f.run();
+  await f.run("inventory-0", "primary");
+  const state = f.session.snapshot();
+  expect(state.fixture.item.version).toBe(1);
+  expect(state.fixture.balances["general/slot-001"]).toBe(19);
+  expect(state.trace.filter((entry) => entry.phase === "observation").at(-1)?.data).toMatchObject({
+    item: { placement: { width: 2, height: 3, revision: 1 } },
+  });
+});
+it("cancels during motion on placement change without spending or delivering button down", async () => {
+  const f = fixture();
+  await f.run();
+  const before = f.session.snapshot();
+  f.events.length = 0;
+  let changed = false;
+  f.hooks.sleep = () => {
+    if (!changed) {
+      changed = true;
+      f.session.configure({ preset: "2x3", column: 4, row: 1, obstacle: false });
+    }
+  };
+  expect((await f.run("inventory-0", "primary")).status).toMatch(/stopped|failed/);
+  expect(f.events).not.toContain("down");
+  expect(f.held()).toBe(false);
+  expect(f.session.snapshot().fixture.balances).toEqual(before.fixture.balances);
+  expect(f.session.snapshot().fixture.epoch).toBe(before.fixture.epoch + 1);
+});
+it("ignores old delivered observations after placement changes and keeps invalid edits atomic", async () => {
+  const f = fixture();
+  await f.run();
+  f.session.setFault("delayed");
+  const pending = f.run("inventory-0", "primary");
+  await vi.advanceTimersByTimeAsync(1);
+  const previous = f.session.snapshot();
+  expect(() =>
+    f.session.configure({ preset: "2x4", column: 11, row: 0, obstacle: false }),
+  ).toThrow();
+  expect(f.session.snapshot().fixture).toEqual(previous.fixture);
+  f.session.configure({ preset: "2x3", column: 4, row: 1, obstacle: false });
+  await vi.advanceTimersByTimeAsync(2000);
+  expect((await pending).status).toBe("placement-changed");
+  expect(f.session.snapshot().fixture.item.version).toBe(1);
+  expect(f.session.snapshot().fixture.balances["general/slot-001"]).toBe(19);
+});
+it("releases held button and Shift after reconfiguration without confirming its cleanup event", async () => {
+  const f = fixture();
+  await f.run();
+  let changed = false;
+  f.hooks.sleep = () => {
+    if (!changed && f.events.at(-1) === "down") {
+      changed = true;
+      f.session.configure({ preset: "2x3", column: 0, row: 0, obstacle: false });
+    }
+  };
+  expect((await f.run("inventory-0", "primary", true)).status).toMatch(/stopped|failed/);
+  expect(changed).toBe(true);
+  expect(f.held()).toBe(false);
+  expect(f.session.snapshot().fixture.item.version).toBe(0);
+  expect(f.session.snapshot().fixture.balances["general/slot-001"]).toBe(20);
+});
 it.each(["missing", "delayed"] as const)(
   "does not retry an unconfirmed %s observation",
   async (fault) => {

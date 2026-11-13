@@ -6,6 +6,7 @@ const f = vi.hoisted(() => ({
   status: vi.fn(),
   query: vi.fn(),
   detail: vi.fn(),
+  dimensions: vi.fn(),
   activate: vi.fn(),
   importDirectory: vi.fn(),
   close: vi.fn(),
@@ -19,6 +20,7 @@ vi.mock("../../src/platform/sqlite/runtime-client", () => ({
     status = f.status;
     query = f.query;
     detail = f.detail;
+    dimensions = f.dimensions;
     activate = f.activate;
     importDirectory = f.importDirectory;
     close = f.close;
@@ -68,7 +70,14 @@ async function fixture() {
 }
 it("rejects other windows/subframes for every catalog operation and restricts opening to main", async () => {
   const x = await fixture();
-  for (const channel of ["status", "query", "detail", "activate", "import"] as const) {
+  for (const channel of [
+    "status",
+    "query",
+    "detail",
+    "dimensions",
+    "activate",
+    "import",
+  ] as const) {
     const handler = f.handlers.get(catalogChannels[channel])!;
     await expect(
       Promise.resolve().then(() =>
@@ -93,6 +102,10 @@ it("validates query/detail/snapshot DTOs before touching storage", async () => {
     await expect(x.invoke("query", value)).rejects.toThrow();
   await expect(x.invoke("detail", { kind: "stat", id: "test" })).rejects.toThrow();
   await expect(x.invoke("activate", "")).rejects.toThrow();
+  await expect(x.invoke("dimensions", { baseId: "x", sql: "escape" })).rejects.toThrow();
+  expect(f.dimensions).not.toHaveBeenCalled();
+  await x.invoke("dimensions", { baseId: "base-1", snapshotId: "fixture-1" });
+  expect(f.dimensions).toHaveBeenCalledWith("base-1", "fixture-1");
   expect(f.query).not.toHaveBeenCalled();
   expect(f.detail).not.toHaveBeenCalled();
   await x.invoke("query", { kind: "base", text: "Paua" });

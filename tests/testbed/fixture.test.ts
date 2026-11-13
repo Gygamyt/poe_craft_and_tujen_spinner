@@ -1,8 +1,67 @@
 import { expect, it } from "vitest";
 import { createFixture, fixtureTargets, applyFixtureAction } from "../../src/features/testbed";
 import { testbedCommandSchema } from "../../src/features/testbed";
+import {
+  configureFixture,
+  fixturePlacements,
+  fixtureInventoryArea,
+} from "../../src/features/testbed";
+import { itemAtPoint } from "../../src/features/inventory";
+it.each(["1x1", "1x3", "2x3", "2x4"] as const)(
+  "maps %s as one target without changing named currency regions",
+  (preset) => {
+    const initial = createFixture(7);
+    const viewport = { width: 1080, height: 760 };
+    for (const page of ["general", "atlas", "league"] as const) {
+      initial.page = page;
+      const state = configureFixture(initial, { preset, column: 4, row: 1, obstacle: true });
+      const targets = fixtureTargets(state, viewport);
+      expect(targets.filter((t) => t.kind === "currency")).toEqual(
+        fixtureTargets(initial, viewport).filter((t) => t.kind === "currency"),
+      );
+      const target = targets.find((t) => t.id === state.item.id)!;
+      const lastCellPoint = {
+        x: target.bounds.x + target.bounds.width - 1,
+        y: target.bounds.y + target.bounds.height - 1,
+      };
+      expect(
+        itemAtPoint(
+          { columns: 12, rows: 5 },
+          fixturePlacements(state),
+          fixtureInventoryArea(viewport),
+          lastCellPoint,
+        )?.instanceId,
+      ).toBe(state.item.id);
+      const currency = targets.find((t) => t.kind === "currency")!;
+      applyFixtureAction(state, currency.id, "secondary", false);
+      applyFixtureAction(state, state.item.id, "primary", false);
+      expect(state.item.version).toBe(1);
+      expect(state.balances[currency.id]).toBe(19);
+    }
+  },
+);
+it("rejects invalid edits without replacing prior state or accepting screen coordinates", () => {
+  const state = createFixture(1),
+    before = structuredClone(state);
+  for (const value of [
+    { preset: "2x4" as const, column: 11, row: 0, obstacle: false },
+    { preset: "2x3" as const, column: 10, row: 2, obstacle: true },
+  ])
+    expect(() => configureFixture(state, value)).toThrow();
+  expect(state).toEqual(before);
+  expect(
+    testbedCommandSchema.safeParse({
+      kind: "placement",
+      preset: "2x3",
+      column: 0,
+      row: 0,
+      obstacle: false,
+      x: 200,
+    }).success,
+  ).toBe(false);
+});
 
-it("has 60 inventory cells and three independent reference stash pages", () => {
+it("has one inventory item target and three independent reference stash pages", () => {
   const state = createFixture(1);
   for (const [page, count] of [
     ["general", 60],
@@ -11,7 +70,7 @@ it("has 60 inventory cells and three independent reference stash pages", () => {
   ] as const) {
     state.page = page;
     const targets = fixtureTargets(state, { width: 1080, height: 760 });
-    expect(targets.filter((target) => target.kind === "inventory")).toHaveLength(60);
+    expect(targets.filter((target) => target.kind === "inventory")).toHaveLength(1);
     expect(targets.filter((target) => target.kind === "currency")).toHaveLength(count);
     expect(new Set(targets.map((target) => target.id)).size).toBe(targets.length);
   }

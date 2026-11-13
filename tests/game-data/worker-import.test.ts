@@ -57,3 +57,29 @@ it("keeps the active snapshot and calibration file unchanged on failed import", 
   expect((await f.client.status()).activeSnapshotId).toBe("fixture-1");
   expect(await readFile(calibration, "utf8")).toBe('{"userGeometry":"retained"}');
 });
+it("resolves dimensions from legacy raw payloads and pins them across activation", async () => {
+  const f = await fixture();
+  await expect(f.client.dimensions("base-1")).rejects.toMatchObject({
+    code: "catalog-unavailable",
+  });
+  await f.client.importDirectory(f.bundle);
+  expect(await f.client.dimensions("base-1")).toMatchObject({
+    status: "unknown",
+    snapshotId: "fixture-1",
+  });
+  const data = catalogFixture();
+  data.bases[0].raw = { inventory_width: 2, inventory_height: 3 };
+  const next = join(f.root, "next");
+  await writeCatalogBundle(next, manifestFixture(data, "fixture-2"), data);
+  await f.client.importDirectory(next);
+  expect(await f.client.dimensions("base-1")).toMatchObject({
+    status: "known",
+    width: 2,
+    height: 3,
+  });
+  expect(await f.client.dimensions("base-1", "fixture-1")).toMatchObject({ status: "unknown" });
+  await expect(f.client.dimensions("absent")).rejects.toMatchObject({ code: "not-found" });
+  await expect(f.client.dimensions("base-1", "absent")).rejects.toMatchObject({
+    code: "unsupported-snapshot",
+  });
+});

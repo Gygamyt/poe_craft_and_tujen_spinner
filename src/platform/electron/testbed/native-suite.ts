@@ -2,6 +2,7 @@ import type { BrowserWindow } from "electron";
 import { setTimeout as delay } from "node:timers/promises";
 import type { TestbedSession } from "../../../features/testbed";
 import type { Win32Input } from "../../windows/input/win32";
+import { planMotion } from "../../../features/input";
 
 /** Explicit opt-in only: each next action waits for observed confirmation. */
 export async function runNativeSuite(
@@ -42,6 +43,66 @@ export async function runNativeSuite(
         (await run("inventory-0", "primary", false, 2)).status === "confirmed",
       );
     }
+    session.configure({ preset: "2x3", column: 4, row: 1, obstacle: true });
+    const large = session.snapshot();
+    const itemTarget = large.targets.find((target) => target.id === large.fixture.item.id)!;
+    let largeSeed = 1;
+    while (largeSeed < 1000) {
+      const plan = planMotion({
+        seed: largeSeed,
+        start: { x: 0, y: 0 },
+        target: itemTarget.bounds,
+        viewport: large.viewport,
+        enabled: true,
+      });
+      if (plan.click.y > itemTarget.bounds.y + itemTarget.bounds.height / 3 + 4) break;
+      largeSeed++;
+    }
+    const selectedCurrency = large.fixture.selected!;
+    check(
+      "multi-cell-native-action",
+      (await run(large.fixture.item.id, "primary", false, largeSeed)).status === "confirmed",
+    );
+    const afterLarge = session.snapshot();
+    const received = afterLarge.trace
+      .filter(
+        (entry) =>
+          entry.phase === "received" && (entry.data as { type: string }).type === "pointerup",
+      )
+      .at(-1)?.data as { x: number; y: number };
+    check(
+      "multi-cell-non-anchor-event",
+      received.y >= itemTarget.bounds.y + itemTarget.bounds.height / 3 &&
+        received.x >= itemTarget.bounds.x &&
+        received.x < itemTarget.bounds.x + itemTarget.bounds.width,
+      received,
+    );
+    check(
+      "multi-cell-single-consumption",
+      afterLarge.fixture.item.version === large.fixture.item.version + 1 &&
+        afterLarge.fixture.balances[selectedCurrency] ===
+          large.fixture.balances[selectedCurrency] - 1,
+    );
+    let placementChanged = false;
+    setHook((data) => {
+      if (!placementChanged && (data as { kind: string }).kind === "move") {
+        placementChanged = true;
+        session.configure({ preset: "2x4", column: 6, row: 0, obstacle: false });
+      }
+    });
+    const stalePlacement = await run("inventory-0", "primary");
+    setHook();
+    check(
+      "stale-placement-stops-input",
+      stalePlacement.status.startsWith("stopped") || stalePlacement.status.startsWith("failed"),
+      stalePlacement,
+    );
+    check(
+      "stale-placement-no-consumption",
+      session.snapshot().fixture.balances[selectedCurrency] ===
+        afterLarge.fixture.balances[selectedCurrency] && !native.held(1),
+    );
+    session.configure({ preset: "1x1", column: 0, row: 0, obstacle: false });
     check("shift-observed", (await run("inventory-0", "primary", true, 3)).status === "confirmed");
     check("shift-released", !native.held(0x10));
     const clicks = session
